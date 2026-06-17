@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Development Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Team Development Dashboard</h1>
+    </header>
+    
+    <main id="app-content">
+        
+        <!-- ========================================== -->
+        <!-- DASHBOARD VIEW                             -->
+        <!-- ========================================== -->
+        <div id="dashboard-view">
+            <div class="dashboard-header">
+                <h2>My Team</h2>
+                <button class="btn-primary" id="add-member-btn">+ Add Team Member</button>
+            </div>
+            
+            <div class="team-grid" id="team-grid"></div>
+
+            <!-- DATA MANAGEMENT -->
+            <div style="margin-top: 40px; border-top: 1px solid #d2d2d7; padding-top: 20px; display: flex; gap: 10px;">
+                <button class="btn-secondary" id="export-btn">⬇️ Export Data</button>
+                <input type="file" id="import-file" accept=".json" class="hidden">
+                <button class="btn-secondary" id="import-btn">⬆️ Import Data</button>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- ADD TEAM MEMBER FORM VIEW                  -->
+        <!-- ========================================== -->
+        <div id="form-view" class="hidden">
+            <div class="dashboard-header"><h2>Add New Team Member</h2></div>
+            <div class="card">
+                <form id="new-member-form">
+                    <div class="form-group"><label>Full Name</label><input type="text" id="memberName" required></div>
+                    <div class="form-group"><label>Apple Retail Role</label><select id="memberRole" required></select></div>
+                    <div class="form-group"><label>Start Date</label><input type="date" id="memberStartDate" required></div>
+                    <div class="form-group"><label>Profile Emoji</label><input type="text" id="memberEmoji" required></div>
+                    <div class="form-group">
+                        <label>Development Level</label>
+                        <select id="devLevel" required>
+                            <option value="D1">D1 - Enthusiastic Beginner</option>
+                            <option value="D2">D2 - Disillusioned Learner</option>
+                            <option value="D3">D3 - Capable but Cautious</option>
+                            <option value="D4">D4 - Self-Reliant Achiever</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Leadership Style</label>
+                        <select id="leadStyle" required>
+                            <option value="S1">S1 - Directing</option>
+                            <option value="S2">S2 - Coaching</option>
+                            <option value="S3">S3 - Supporting</option>
+                            <option value="S4">S4 - Delegating</option>
+                        </select>
+                    </div>
+                    <div class="button-group">
+                        <button type="button" class="btn-secondary" id="cancel-btn">Cancel</button>
+                        <button type="submit" class="btn-primary">Save Team Member</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- INDIVIDUAL PROFILE VIEW                    -->
+        <!-- ========================================== -->
+        <div id="profile-view" class="hidden">
+            
+            <div class="dashboard-header">
+                <button class="btn-secondary" id="back-btn">← Back to Dashboard</button>
+                <h2 id="profile-name">Name</h2>
+                <div style="width: 100px;"></div>
+            </div>
+
+            <!-- Profile Header Card -->
+            <div class="card profile-header-card">
+                <div class="profile-header-content">
+                    <div class="profile-emoji-large" id="profile-emoji"></div>
+                    <div class="member-info">
+                        <h3 id="profile-role" style="font-size: 22px; margin-bottom: 10px;"></h3>
+                        <div class="badges" id="profile-badges"></div>
+                        <p style="margin-top: 10px;"><strong>Start Date:</strong> <span id="profile-start-date"></span></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- EXPAND / COLLAPSE BUTTONS -->
+            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; margin-bottom: -5px;">
+                <button class="btn-small" id="default-view-btn">Default View</button>
+                <button class="btn-small" id="expand-all-btn">Expand All</button>
+                <button class="btn-small" id="collapse-all-btn">Collapse All</button>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- COLLAPSIBLE PROFILE SECTIONS               -->
+            <!-- ========================================== -->
+            
+            <!-- Job Description & Competencies -->
+            <details class="profile-section-accordion bg-pastel-gray" style="margin-top: 20px;">
+                <summary>Job Description & Critical Competencies</summary>
+                <div class="accordion-content card-no-border">
+                    <h3 class="section-title" style="margin-top: 0;">Job Description</h3>
+                    <div id="profile-role-desc" style="color: #1d1d1f; line-height: 1.5;"></div>
+                    
+                    <h3 class="section-title" style="margin-top: 30px;">Critical Competencies & Attributes</h3>
+                    <div id="profile-critical-comps" style="color: #1d1d1f; line-height: 1.5; font-size: 14px; background-color: #f5f5f7; padding: 15px; border-radius: 10px;"></div>
+                </div>
+            </details>
+
+            <!-- FYI Competencies Tracker -->
+            <details class="profile-section-accordion default-open bg-pastel-blue" open>
+                <summary>FYI Focus Competencies (Max 3)</summary>
+                <div class="accordion-content card-no-border">
+                    <div id="fyi-list"></div>
+                    <div class="add-form-box" id="fyi-form-box">
+                        <h4>Add Focus Competency</h4>
+                        <div class="form-group"><select id="new-fyi-select"></select></div>
+                        <div class="form-group">
+                            <select id="new-fyi-rating">
+                                <option value="Less Skilled">Less Skilled</option>
+                                <option value="Skilled">Skilled</option>
+                                <option value="Talented">Talented</option>
+                                <option value="Overused">Overused</option>
+                            </select>
+                        </div>
+                        <div class="form-group"><input type="text" id="new-fyi-notes" placeholder="Add notes or context..."></div>
+                        <button class="btn-secondary" id="add-fyi-btn">+ Add Competency</button>
+                    </div>
+                </div>
+            </details>
+
+            <!-- Leadership Palette Tracker -->
+            <details class="profile-section-accordion default-open bg-pastel-purple" open>
+                <summary>Leadership Palette</summary>
+                <div class="accordion-content card-no-border">
+                    <div id="palette-list"></div>
+                    <div class="add-form-box">
+                        <h4>Add Focus Attribute</h4>
+                        <div class="form-group"><select id="new-palette-select"></select></div>
+                        <div class="form-group">
+                            <select id="new-palette-rating">
+                                <option value="Less Skilled">Less Skilled</option>
+                                <option value="Skilled">Skilled</option>
+                                <option value="Talented">Talented</option>
+                                <option value="Overused">Overused</option>
+                            </select>
+                        </div>
+                        <div class="form-group"><input type="text" id="new-palette-notes" placeholder="Add notes or context..."></div>
+                        <button class="btn-secondary" id="add-palette-btn">+ Add Attribute</button>
+                    </div>
+                </div>
+            </details>
+
+            <!-- Development Goals -->
+            <details class="profile-section-accordion bg-pastel-green">
+                <summary>Development Goals</summary>
+                <div class="accordion-content card-no-border">
+                    <div id="goals-list"></div>
+                    <div class="add-form-box">
+                        <h4>Add New Goal</h4>
+                        <div style="font-size: 13px; color: #6e6e73; margin-bottom: 15px; background-color: #e5e5ea; padding: 10px; border-radius: 8px;">
+                            <strong>Job Description:</strong> 
+                            <div id="goal-role-hint" style="margin-top: 10px;"></div>
+                        </div>
+                        <div class="form-group"><input type="text" id="new-goal-title" placeholder="Goal Title" required></div>
+                        <div class="form-group"><textarea id="new-goal-desc" placeholder="Goal Description..." rows="3" style="padding: 12px; border: 1px solid #d2d2d7; border-radius: 10px; font-family: inherit; font-size: 16px;"></textarea></div>
+                        <div class="form-group"><label>Target Date</label><input type="date" id="new-goal-date" required></div>
+                        <div class="form-group">
+                            <label>Status</label>
+                            <select id="new-goal-status">
+                                <option value="Not Started">Not Started</option>
+                                <option value="In Progress">In Progress</option>
+                                <option value="Complete">Complete</option>
+                            </select>
+                        </div>
+                        <button class="btn-secondary" id="add-goal-btn">+ Add Goal</button>
+                    </div>
+                </div>
+            </details>
+
+            <!-- Check-in Notes -->
+            <details class="profile-section-accordion bg-pastel-yellow">
+                <summary>Check-in Notes</summary>
+                <div class="accordion-content card-no-border">
+                    <div id="checkins-list"></div>
+                    <div class="add-form-box">
+                        <h4>Log a Check-in</h4>
+                        <div class="form-group"><label>Date</label><input type="date" id="new-checkin-date" required></div>
+                        <div class="form-group"><input type="text" id="new-checkin-summary" placeholder="Summary" required></div>
+                        <div class="form-group"><textarea id="new-checkin-obs" placeholder="Key Observations..." rows="2" style="padding: 12px; border: 1px solid #d2d2d7; border-radius: 10px; font-family: inherit; font-size: 14px;"></textarea></div>
+                        <div class="form-group"><textarea id="new-checkin-actions" placeholder="Agreed Actions..." rows="2" style="padding: 12px; border: 1px solid #d2d2d7; border-radius: 10px; font-family: inherit; font-size: 14px;"></textarea></div>
+                        <button class="btn-secondary" id="add-checkin-btn">+ Log Check-in</button>
+                    </div>
+                </div>
+            </details>
+
+            <!-- Meeting History -->
+            <details class="profile-section-accordion bg-pastel-orange" style="margin-bottom: 40px;">
+                <summary>Meeting History</summary>
+                <div class="accordion-content card-no-border">
+                    <div id="meetings-list"></div>
+                    <div class="add-form-box">
+                        <h4>Log a Meeting</h4>
+                        <div class="form-group"><label>Date</label><input type="date" id="new-meeting-date" required></div>
+                        <div class="form-group">
+                            <label>Meeting Type</label>
+                            <select id="new-meeting-type">
+                                <option value="1:1">1:1</option>
+                                <option value="Development">Development</option>
+                                <option value="Performance">Performance</option>
+                            </select>
+                        </div>
+                        <div class="form-group"><textarea id="new-meeting-notes" placeholder="Meeting Notes..." rows="2" style="padding: 12px; border: 1px solid #d2d2d7; border-radius: 10px; font-family: inherit; font-size: 14px;"></textarea></div>
+                        <div class="form-group"><textarea id="new-meeting-actions" placeholder="Follow-up Actions..." rows="2" style="padding: 12px; border: 1px solid #d2d2d7; border-radius: 10px; font-family: inherit; font-size: 14px;"></textarea></div>
+                        <button class="btn-secondary" id="add-meeting-btn">+ Log Meeting</button>
+                    </div>
+                </div>
+            </details>
+
+        </div> <!-- THIS IS THE END OF THE PROFILE VIEW -->
+
+        <!-- ========================================== -->
+        <!-- EDIT TRACKER MODAL                         -->
+        <!-- ========================================== -->
+        <div id="edit-modal" class="hidden" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000;">
+            <div class="card" style="width: 90%; max-width: 400px;">
+                <h3 id="edit-modal-title" style="margin-top: 0;">Edit Item</h3>
+                <div class="form-group">
+                    <label>Rating</label>
+                    <select id="edit-rating">
+                        <option value="Less Skilled">Less Skilled</option>
+                        <option value="Skilled">Skilled</option>
+                        <option value="Talented">Talented</option>
+                        <option value="Overused">Overused</option>
+                    </select>
+                </div>
+                <div class="form-group"><label>Notes</label><input type="text" id="edit-notes"></div>
+                <div class="button-group" style="margin-top: 20px;">
+                    <button class="btn-secondary" id="cancel-edit-btn">Cancel</button>
+                    <button class="btn-primary" id="save-edit-btn">Save Changes</button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>

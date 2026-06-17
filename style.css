@@ -1,0 +1,504 @@
+/* --- BASIC SETUP --- */
+/* We create some "variables" for our colors so they are easy to reuse */
+:root {
+    --apple-bg: #f5f5f7; /* Light gray background */
+    --apple-text: #1d1d1f; /* Dark gray text */
+    --apple-blue: #0071e3; /* Apple's signature blue */
+    --apple-card: #ffffff; /* White for our cards */
+}
+
+/* This applies to the whole page */
+body {
+    /* This tells the browser to use Apple's native system fonts */
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--apple-bg);
+    color: var(--apple-text);
+    margin: 0;
+    padding: 0;
+}
+
+/* --- HEADER STYLING --- */
+header {
+    background-color: rgba(255, 255, 255, 0.8);
+    /* This creates that cool frosted glass blur effect! */
+    backdrop-filter: blur(10px); 
+    -webkit-backdrop-filter: blur(10px);
+    padding: 15px 20px;
+    text-align: center;
+    border-bottom: 1px solid #d2d2d7;
+    position: sticky;
+    top: 0;
+}
+
+h1 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 600;
+}
+
+/* --- MAIN CONTENT AREA --- */
+main {
+    max-width: 1000px; /* Prevents the app from getting too wide on big screens */
+    margin: 30px auto; /* Centers the app on the screen */
+    padding: 0 20px;
+}
+
+/* --- DASHBOARD LAYOUT --- */
+.dashboard-header {
+    display: flex; /* Puts the title and button on the same line */
+    justify-content: space-between; /* Pushes them to opposite sides */
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.dashboard-header h2 {
+    margin: 0;
+    font-size: 28px;
+}
+
+/* --- BUTTONS --- */
+.btn-primary {
+    background-color: var(--apple-blue);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px; /* Gives the button nice rounded pill-like edges */
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.btn-primary:hover {
+    background-color: #005bb5; /* Makes the button slightly darker when you hover over it */
+}
+
+/* --- TEAM GRID (Where our team members will go) --- */
+.team-grid {
+    display: grid;
+    /* This magic line makes the grid responsive. It fits as many cards as it can, and drops to a new line on small screens like phones! */
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+/* We will use this later when we create the actual team member cards */
+.card {
+    background-color: var(--apple-card);
+    border-radius: 18px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); /* A very soft shadow */
+}
+/* --- UTILITY CLASSES --- */
+/* This is a magic class. Anything with this class disappears! */
+.hidden {
+    display: none !important;
+}
+
+/* --- FORM STYLING --- */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    font-weight: 600;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.form-group input, 
+.form-group select {
+    padding: 12px;
+    border: 1px solid #d2d2d7;
+    border-radius: 10px;
+    font-size: 16px;
+    font-family: inherit; /* Uses the Apple font we set earlier */
+}
+
+/* Makes a nice blue ring around the input when you click on it */
+.form-group input:focus, 
+.form-group select:focus {
+    outline: none;
+    border-color: var(--apple-blue);
+    box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.3);
+}
+
+.button-group {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.btn-secondary {
+    background-color: #e5e5ea;
+    color: var(--apple-text);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.btn-secondary:hover {
+    background-color: #d1d1d6;
+}
+/* --- TEAM MEMBER CARDS & BADGES --- */
+.member-card-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.member-emoji {
+    font-size: 40px;
+    background-color: var(--apple-bg);
+    width: 65px;
+    height: 65px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%; /* Makes it a perfect circle */
+}
+
+.member-info h3 { 
+    margin: 0; 
+    font-size: 18px; 
+}
+
+.member-info p { 
+    margin: 4px 0 0 0; 
+    font-size: 14px; 
+    color: #6e6e73; /* A nice subtle gray */
+}
+
+.badges {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.badge {
+    padding: 5px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* Color coding for Development Levels */
+.badge-d1 { background-color: #e5f0ff; color: #0066cc; } /* Blue */
+.badge-d2 { background-color: #fff0e5; color: #cc5200; } /* Orange */
+.badge-d3 { background-color: #fffbe5; color: #997a00; } /* Yellow */
+.badge-d4 { background-color: #e5ffe5; color: #008000; } /* Green */
+
+/* Style for Leadership Style badge */
+.badge-style { 
+    background-color: #f5f5f7; 
+    color: #1d1d1f; 
+    border: 1px solid #d2d2d7; 
+}
+
+.card-stats {
+    font-size: 13px;
+    color: #6e6e73;
+    border-top: 1px solid #f5f5f7;
+    padding-top: 10px;
+    margin-top: 10px;
+}
+/* --- CLICKABLE CARDS --- */
+.clickable-card {
+    cursor: pointer;
+    /* This makes the hover animation smooth */
+    transition: transform 0.2s ease, box-shadow 0.2s ease; 
+}
+
+.clickable-card:hover {
+    /* Moves the card up slightly and makes the shadow bigger */
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* --- PROFILE VIEW STYLING --- */
+.profile-header-content {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+.profile-emoji-large {
+    font-size: 60px;
+    background-color: var(--apple-bg);
+    width: 110px;
+    height: 110px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.section-title {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 18px;
+    border-bottom: 1px solid var(--apple-bg);
+    padding-bottom: 10px;
+}
+
+/* --- TRACKER STYLES (Competencies & Pillars) --- */
+.add-form-box {
+    background-color: #f5f5f7;
+    padding: 15px;
+    border-radius: 12px;
+    margin-top: 15px;
+}
+
+.add-form-box h4 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 15px;
+}
+
+/* The saved item card */
+.item-card {
+    background-color: white;
+    border: 1px solid #d2d2d7;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+.item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.item-title {
+    font-weight: 600;
+    font-size: 16px;
+    margin: 0;
+}
+
+/* The 1-5 Rating Badge */
+.rating-badge {
+    background-color: var(--apple-blue);
+    color: white;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.item-notes {
+    margin: 0;
+    font-size: 14px;
+    color: #6e6e73;
+}
+/* --- GOAL TRACKER STYLES --- */
+.goal-desc {
+    margin: 10px 0;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.goal-meta {
+    font-size: 13px;
+    color: #6e6e73;
+    margin-top: 10px;
+    border-top: 1px solid #f5f5f7;
+    padding-top: 10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+/* Status Colors */
+.status-Not-Started { background-color: #e5e5ea; color: #1d1d1f; } /* Gray */
+.status-In-Progress { background-color: #fff0e5; color: #cc5200; } /* Orange */
+.status-Complete { background-color: #e5ffe5; color: #008000; } /* Green */
+
+/* --- ACTION BUTTONS FOR CARDS --- */
+.card-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.btn-small {
+    background-color: transparent;
+    border: 1px solid #d2d2d7;
+    color: #1d1d1f;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.btn-small:hover {
+    background-color: #f5f5f7;
+}
+
+.btn-delete {
+    color: #ff3b30; /* Apple Red */
+    border-color: #ff3b30;
+}
+
+.btn-delete:hover {
+    background-color: #fff0f0;
+}
+
+/* --- ROLE HINT ACCORDIONS --- */
+#goal-role-hint {
+    display: block;
+    line-height: 1.4;
+    font-size: 14px;
+    color: #1d1d1f;
+}
+
+/* The expanding box */
+details.role-accordion {
+    background: #ffffff;
+    border: 1px solid #d2d2d7;
+    border-radius: 8px;
+    margin-top: 8px;
+    overflow: hidden;
+}
+
+/* The clickable title */
+details.role-accordion summary {
+    padding: 12px 30px 12px 12px;
+    font-weight: 600;
+    cursor: pointer;
+    background: #f5f5f7;
+    list-style: none; /* Hides the default browser arrow */
+    position: relative;
+    font-size: 13px;
+}
+
+/* Hides the default arrow in Safari/Chrome */
+details.role-accordion summary::-webkit-details-marker {
+    display: none; 
+}
+
+/* Creates our own custom + and - icons */
+details.role-accordion summary::after {
+    content: '+';
+    position: absolute;
+    right: 15px;
+    top: 12px;
+    font-size: 16px;
+    color: #0071e3;
+}
+
+details.role-accordion[open] summary::after {
+    content: '−';
+}
+
+/* The content inside when expanded */
+.accordion-content {
+    padding: 15px;
+    font-size: 13px;
+    border-top: 1px solid #d2d2d7;
+    background: #ffffff;
+}
+
+.accordion-content ul {
+    margin-top: 5px;
+    margin-bottom: 15px;
+    padding-left: 20px;
+}
+
+.accordion-content li {
+    margin-bottom: 6px;
+}
+
+/* --- MAIN PROFILE SECTION ACCORDIONS --- */
+details.profile-section-accordion {
+    background-color: var(--apple-card);
+    border-radius: 18px;
+    margin-bottom: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+}
+
+details.profile-section-accordion > summary {
+    padding: 20px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    list-style: none;
+    position: relative;
+    color: var(--apple-text);
+}
+
+details.profile-section-accordion > summary::-webkit-details-marker {
+    display: none; 
+}
+
+/* The custom + and - icons for the main sections */
+details.profile-section-accordion > summary::after {
+    content: '+';
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    font-size: 22px;
+    color: var(--apple-blue);
+    font-weight: 400;
+}
+
+details.profile-section-accordion[open] > summary::after {
+    content: '−';
+}
+
+/* Remove the border from the content area inside these specific cards */
+.card-no-border {
+    border-top: none;
+    padding-top: 0;
+}
+
+/* --- PASTEL BACKGROUND COLORS FOR PROFILE SECTIONS --- */
+
+/* Light Gray (Job Description) */
+.bg-pastel-gray { background-color: #f5f5f7 !important; }
+.bg-pastel-gray > summary { background-color: #f5f5f7 !important; }
+.bg-pastel-gray .accordion-content { background-color: #f5f5f7 !important; }
+
+/* Light Blue (FYI Competencies) */
+.bg-pastel-blue { background-color: #eaf2ff !important; border: 1px solid #cce0ff !important; }
+.bg-pastel-blue > summary { background-color: #eaf2ff !important; }
+.bg-pastel-blue .accordion-content { background-color: #eaf2ff !important; border-top-color: #cce0ff !important;}
+
+/* Light Purple (Leadership Palette) */
+.bg-pastel-purple { background-color: #f4eaff !important; border: 1px solid #e0ccff !important; }
+.bg-pastel-purple > summary { background-color: #f4eaff !important; }
+.bg-pastel-purple .accordion-content { background-color: #f4eaff !important; border-top-color: #e0ccff !important;}
+
+/* Light Green (Development Goals) */
+.bg-pastel-green { background-color: #eaffea !important; border: 1px solid #ccffcc !important; }
+.bg-pastel-green > summary { background-color: #eaffea !important; }
+.bg-pastel-green .accordion-content { background-color: #eaffea !important; border-top-color: #ccffcc !important;}
+
+/* Light Yellow (Check-in Notes) */
+.bg-pastel-yellow { background-color: #fffbea !important; border: 1px solid #ffeb99 !important; }
+.bg-pastel-yellow > summary { background-color: #fffbea !important; }
+.bg-pastel-yellow .accordion-content { background-color: #fffbea !important; border-top-color: #ffeb99 !important;}
+
+/* Light Orange (Meeting History) */
+.bg-pastel-orange { background-color: #fff0e5 !important; border: 1px solid #ffd6b3 !important; }
+.bg-pastel-orange > summary { background-color: #fff0e5 !important; }
+.bg-pastel-orange .accordion-content { background-color: #fff0e5 !important; border-top-color: #ffd6b3 !important;}
+
+/* Make sure the inner cards (like saved goals or notes) stay white so they pop against the pastel background */
+.profile-section-accordion .item-card {
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    border: none;
+}
+
+/* Make sure the "Add Form" box stays white too */
+.profile-section-accordion .add-form-box {
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    border: 1px solid rgba(0,0,0,0.05);
+}
