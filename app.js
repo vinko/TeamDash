@@ -728,9 +728,15 @@ const backBtn = document.getElementById('back-btn');
 const exportBtn = document.getElementById('export-btn');
 const importBtn = document.getElementById('import-btn');
 const importFile = document.getElementById('import-file');
+const clearBtn = document.getElementById('clear-btn');
 const fyiSelect = document.getElementById('new-fyi-select');
 const paletteSelect = document.getElementById('new-palette-select');
 const editModal = document.getElementById('edit-modal');
+const editProfileBtn = document.getElementById('edit-profile-btn');
+const editProfileModal = document.getElementById('edit-profile-modal');
+const editProfileForm = document.getElementById('edit-profile-form');
+const cancelEditProfileBtn = document.getElementById('cancel-edit-profile-btn');
+const editRoleDropdown = document.getElementById('editMemberRole');
 
 let currentViewedMemberId = null;
 let editingType = null;  
@@ -786,19 +792,28 @@ const roleCategories = {
 };
 
 roleDropdown.innerHTML = '<option value="">-- Select a Role --</option>';
+editRoleDropdown.innerHTML = '<option value="">-- Select a Role --</option>';
 
 for (let category in roleCategories) {
     let optgroup = document.createElement('optgroup');
     optgroup.label = category + " Level"; 
+    let editOptgroup = document.createElement('optgroup');
+    editOptgroup.label = category + " Level"; 
     
     roleCategories[category].forEach(function(roleName) {
         let newOption = document.createElement('option');
         newOption.value = roleName;
         newOption.textContent = roleName;
         optgroup.appendChild(newOption); 
+        
+        let editOption = document.createElement('option');
+        editOption.value = roleName;
+        editOption.textContent = roleName;
+        editOptgroup.appendChild(editOption);
     });
     
     roleDropdown.appendChild(optgroup);
+    editRoleDropdown.appendChild(editOptgroup);
 }
 
 // --- POPULATE TRACKER DROPDOWNS ---
@@ -825,6 +840,15 @@ devLevelSelect.addEventListener('change', function() {
     if (selectedLevel === 'D2') leadStyleSelect.value = 'S2';
     if (selectedLevel === 'D3') leadStyleSelect.value = 'S3';
     if (selectedLevel === 'D4') leadStyleSelect.value = 'S4';
+});
+
+document.getElementById('editDevLevel').addEventListener('change', function() {
+    const selectedLevel = this.value;
+    const editLeadStyleSelect = document.getElementById('editLeadStyle');
+    if (selectedLevel === 'D1') editLeadStyleSelect.value = 'S1';
+    if (selectedLevel === 'D2') editLeadStyleSelect.value = 'S2';
+    if (selectedLevel === 'D3') editLeadStyleSelect.value = 'S3';
+    if (selectedLevel === 'D4') editLeadStyleSelect.value = 'S4';
 });
 
 // --- SAVING NEW TEAM MEMBER ---
@@ -1273,6 +1297,60 @@ importFile.addEventListener('change', function(event) {
     
     reader.readAsText(file);
 });
+
+// --- CLEAR STORAGE LOGIC ---
+clearBtn.addEventListener('click', function() {
+    if (confirm("Are you sure you want to clear all team members? This cannot be undone.")) {
+        localStorage.removeItem('teamMembersData');
+        teamMembers = [];
+        renderDashboard();
+    }
+});
+
+// --- EDIT PROFILE LOGIC ---
+editProfileBtn.addEventListener('click', function() {
+    const member = teamMembers.find(m => m.id === currentViewedMemberId);
+    if (!member) return;
+    
+    document.getElementById('editMemberName').value = member.name;
+    document.getElementById('editMemberRole').value = member.role;
+    document.getElementById('editMemberStartDate').value = member.startDate;
+    document.getElementById('editMemberEmoji').value = member.emoji;
+    document.getElementById('editDevLevel').value = member.devLevel;
+    document.getElementById('editLeadStyle').value = member.leadStyle;
+    
+    editProfileModal.style.display = 'flex';
+    editProfileModal.classList.remove('hidden');
+});
+
+cancelEditProfileBtn.addEventListener('click', function() {
+    editProfileModal.style.display = 'none';
+    editProfileModal.classList.add('hidden');
+});
+
+editProfileForm.addEventListener('submit', function(event) {
+    event.preventDefault();
+    
+    const memberIndex = teamMembers.findIndex(m => m.id === currentViewedMemberId);
+    if (memberIndex === -1) return;
+    
+    teamMembers[memberIndex].name = document.getElementById('editMemberName').value;
+    teamMembers[memberIndex].role = document.getElementById('editMemberRole').value;
+    teamMembers[memberIndex].startDate = document.getElementById('editMemberStartDate').value;
+    teamMembers[memberIndex].emoji = document.getElementById('editMemberEmoji').value;
+    teamMembers[memberIndex].devLevel = document.getElementById('editDevLevel').value;
+    teamMembers[memberIndex].leadStyle = document.getElementById('editLeadStyle').value;
+    
+    localStorage.setItem('teamMembersData', JSON.stringify(teamMembers));
+    
+    editProfileModal.style.display = 'none';
+    editProfileModal.classList.add('hidden');
+    
+    renderDashboard();
+    openProfile(currentViewedMemberId);
+});
+
+editProfileModal.style.display = 'none';
 
 // --- LOAD SAVED DATA ON STARTUP ---
 function loadSavedData() {
