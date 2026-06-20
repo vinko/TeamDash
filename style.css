@@ -28,6 +28,7 @@ header {
     border-bottom: 1px solid #d2d2d7;
     position: sticky;
     top: 0;
+    z-index: 100;
 }
 
 h1 {
@@ -49,6 +50,8 @@ main {
     justify-content: space-between; /* Pushes them to opposite sides */
     align-items: center;
     margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 15px;
 }
 
 .dashboard-header h2 {
@@ -61,15 +64,82 @@ main {
     background-color: var(--apple-blue);
     color: white;
     border: none;
-    padding: 10px 20px;
-    border-radius: 20px; /* Gives the button nice rounded pill-like edges */
+    padding: 12px 24px;
+    border-radius: 24px; /* Gives the button nice rounded pill-like edges */
     font-size: 16px;
     font-weight: 500;
     cursor: pointer;
+    min-height: 44px; /* Apple UI Guideline for touch targets */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .btn-primary:hover {
     background-color: #005bb5; /* Makes the button slightly darker when you hover over it */
+}
+
+.btn-secondary {
+    background-color: #e5e5ea;
+    color: var(--apple-text);
+    border: none;
+    padding: 12px 24px;
+    border-radius: 24px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    min-height: 44px; /* Apple UI Guideline for touch targets */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-secondary:hover {
+    background-color: #d1d1d6;
+}
+
+.btn-small {
+    background-color: transparent;
+    border: 1px solid #d2d2d7;
+    color: #1d1d1f;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    min-height: 44px; /* Apple UI Guideline for touch targets */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-small:hover {
+    background-color: #f5f5f7;
+}
+
+.btn-delete {
+    color: #ff3b30; /* Apple Red */
+    border-color: #ff3b30;
+}
+
+.btn-delete:hover {
+    background-color: #fff0f0;
+}
+
+.button-group {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+    flex-wrap: wrap; /* Allows buttons to stack on small screens */
+}
+
+/* Data Management Buttons Container */
+.data-management-container {
+    margin-top: 40px;
+    border-top: 1px solid #d2d2d7;
+    padding-top: 20px;
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
 }
 
 /* --- TEAM GRID (Where our team members will go) --- */
@@ -87,6 +157,7 @@ main {
     padding: 20px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); /* A very soft shadow */
 }
+
 /* --- UTILITY CLASSES --- */
 /* This is a magic class. Anything with this class disappears! */
 .hidden {
@@ -107,42 +178,26 @@ main {
 }
 
 .form-group input, 
-.form-group select {
+.form-group select,
+.form-group textarea {
     padding: 12px;
     border: 1px solid #d2d2d7;
     border-radius: 10px;
     font-size: 16px;
     font-family: inherit; /* Uses the Apple font we set earlier */
+    min-height: 44px; /* Touch target size for inputs */
+    box-sizing: border-box;
 }
 
 /* Makes a nice blue ring around the input when you click on it */
 .form-group input:focus, 
-.form-group select:focus {
+.form-group select:focus,
+.form-group textarea:focus {
     outline: none;
     border-color: var(--apple-blue);
     box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.3);
 }
 
-.button-group {
-    display: flex;
-    gap: 15px;
-    margin-top: 30px;
-}
-
-.btn-secondary {
-    background-color: #e5e5ea;
-    color: var(--apple-text);
-    border: none;
-    padding: 10px 20px;
-    border-radius: 20px;
-    font-size: 16px;
-    font-weight: 500;
-    cursor: pointer;
-}
-
-.btn-secondary:hover {
-    background-color: #d1d1d6;
-}
 /* --- TEAM MEMBER CARDS & BADGES --- */
 .member-card-header {
     display: flex;
@@ -177,6 +232,7 @@ main {
     display: flex;
     gap: 10px;
     margin-bottom: 15px;
+    flex-wrap: wrap;
 }
 
 .badge {
@@ -206,6 +262,7 @@ main {
     padding-top: 10px;
     margin-top: 10px;
 }
+
 /* --- CLICKABLE CARDS --- */
 .clickable-card {
     cursor: pointer;
@@ -224,6 +281,7 @@ main {
     display: flex;
     align-items: center;
     gap: 25px;
+    flex-wrap: wrap;
 }
 
 .profile-emoji-large {
@@ -273,6 +331,8 @@ main {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 8px;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
 .item-title {
@@ -296,6 +356,7 @@ main {
     font-size: 14px;
     color: #6e6e73;
 }
+
 /* --- GOAL TRACKER STYLES --- */
 .goal-desc {
     margin: 10px 0;
@@ -311,6 +372,8 @@ main {
     padding-top: 10px;
     display: flex;
     justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 5px;
 }
 
 /* Status Colors */
@@ -323,29 +386,7 @@ main {
     display: flex;
     gap: 10px;
     margin-top: 10px;
-}
-
-.btn-small {
-    background-color: transparent;
-    border: 1px solid #d2d2d7;
-    color: #1d1d1f;
-    padding: 4px 10px;
-    border-radius: 6px;
-    font-size: 12px;
-    cursor: pointer;
-}
-
-.btn-small:hover {
-    background-color: #f5f5f7;
-}
-
-.btn-delete {
-    color: #ff3b30; /* Apple Red */
-    border-color: #ff3b30;
-}
-
-.btn-delete:hover {
-    background-color: #fff0f0;
+    flex-wrap: wrap;
 }
 
 /* --- ROLE HINT ACCORDIONS --- */
@@ -374,6 +415,9 @@ details.role-accordion summary {
     list-style: none; /* Hides the default browser arrow */
     position: relative;
     font-size: 13px;
+    min-height: 44px; /* Touch target */
+    display: flex;
+    align-items: center;
 }
 
 /* Hides the default arrow in Safari/Chrome */
@@ -386,8 +430,9 @@ details.role-accordion summary::after {
     content: '+';
     position: absolute;
     right: 15px;
-    top: 12px;
-    font-size: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 18px;
     color: #0071e3;
 }
 
@@ -430,6 +475,9 @@ details.profile-section-accordion > summary {
     list-style: none;
     position: relative;
     color: var(--apple-text);
+    min-height: 44px; /* Touch target */
+    display: flex;
+    align-items: center;
 }
 
 details.profile-section-accordion > summary::-webkit-details-marker {
@@ -441,7 +489,8 @@ details.profile-section-accordion > summary::after {
     content: '+';
     position: absolute;
     right: 20px;
-    top: 20px;
+    top: 50%;
+    transform: translateY(-50%);
     font-size: 22px;
     color: var(--apple-blue);
     font-weight: 400;
@@ -501,4 +550,55 @@ details.profile-section-accordion[open] > summary::after {
     background-color: #ffffff;
     box-shadow: 0 2px 4px rgba(0,0,0,0.02);
     border: 1px solid rgba(0,0,0,0.05);
+}
+
+/* --- RESPONSIVE MEDIA QUERIES FOR MOBILE (iPHONE) --- */
+@media (max-width: 600px) {
+    /* Stack buttons full-width on mobile */
+    .btn-primary, .btn-secondary {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+    
+    .button-group, .data-management-container {
+        flex-direction: column;
+        gap: 0;
+    }
+    
+    /* Expand/Collapse buttons container */
+    #profile-view > div[style*="justify-content: flex-end"] {
+        justify-content: space-between !important;
+        flex-wrap: wrap;
+    }
+    
+    .btn-small {
+        flex: 1 1 calc(33% - 10px);
+        margin-bottom: 10px;
+        text-align: center;
+        padding: 10px 5px;
+    }
+    
+    /* Edit/Delete buttons on cards */
+    .card-actions .btn-small {
+        flex: 1;
+    }
+    
+    .dashboard-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .dashboard-header h2 {
+        text-align: center;
+        margin-bottom: 10px;
+    }
+    
+    .profile-header-content {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .badges {
+        justify-content: center;
+    }
 }
