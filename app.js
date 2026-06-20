@@ -713,6 +713,13 @@ const leadershipPalette = {
 
 let teamMembers = [];
 
+// --- HELPER FUNCTION TO SAVE DATA TO INDEXEDDB ---
+function saveTeamData() {
+    localforage.setItem('teamMembersData', teamMembers).catch(function(err) {
+        console.error("Error saving data to IndexedDB", err);
+    });
+}
+
 // --- HTML ELEMENTS ---
 const dashboardView = document.getElementById('dashboard-view');
 const formView = document.getElementById('form-view');
@@ -871,7 +878,7 @@ memberForm.addEventListener('submit', function(event) {
     };
 
     teamMembers.push(newMember);
-    localStorage.setItem('teamMembersData', JSON.stringify(teamMembers));
+    saveTeamData();
 
     memberForm.reset();
     formView.classList.add('hidden');
@@ -1037,7 +1044,7 @@ document.getElementById('add-fyi-btn').addEventListener('click', function() {
     const member = teamMembers.find(m => m.id === currentViewedMemberId);
     
     member.competencies.push({ name: name, rating: rating, notes: notes });
-    localStorage.setItem('teamMembersData', JSON.stringify(teamMembers));
+    saveTeamData();
     
     fyiSelect.value = '';
     document.getElementById('new-fyi-notes').value = '';
@@ -1054,7 +1061,7 @@ document.getElementById('add-palette-btn').addEventListener('click', function() 
     const member = teamMembers.find(m => m.id === currentViewedMemberId);
     
     member.palette.push({ name: name, rating: rating, notes: notes });
-    localStorage.setItem('teamMembersData', JSON.stringify(teamMembers));
+    saveTeamData();
     
     paletteSelect.value = '';
     document.getElementById('new-palette-notes').value = '';
@@ -1102,7 +1109,7 @@ document.getElementById('add-goal-btn').addEventListener('click', function() {
         status: status
     });
     
-    localStorage.setItem('teamMembersData', JSON.stringify(teamMembers));
+    saveTeamData();
     
     document.getElementById('new-goal-title').value = '';
     document.getElementById('new-goal-desc').value = '';
@@ -1146,7 +1153,7 @@ document.getElementById('save-edit-btn').addEventListener('click', function() {
     member[editingType][editingIndex].rating = document.getElementById('edit-rating').value;
     member[editingType][editingIndex].notes = document.getElementById('edit-notes').value;
 
-    localStorage.setItem('teamMembersData', JSON.stringify(teamMembers));
+    saveTeamData();
     
     editModal.style.display = 'none';
     editModal.classList.add('hidden');
@@ -1161,7 +1168,7 @@ function deleteItem(type, index) {
     
     member[type].splice(index, 1);
     
-    localStorage.setItem('teamMembersData', JSON.stringify(teamMembers));
+    saveTeamData();
     renderTrackers(member);
 }
 
@@ -1200,7 +1207,7 @@ document.getElementById('add-checkin-btn').addEventListener('click', function() 
     const member = teamMembers.find(m => m.id === currentViewedMemberId);
     
     member.checkIns.push({ date: date, summary: summary, observations: obs, actions: actions });
-    localStorage.setItem('teamMembersData', JSON.stringify(teamMembers));
+    saveTeamData();
     
     document.getElementById('new-checkin-date').value = '';
     document.getElementById('new-checkin-summary').value = '';
@@ -1243,7 +1250,7 @@ document.getElementById('add-meeting-btn').addEventListener('click', function() 
     const member = teamMembers.find(m => m.id === currentViewedMemberId);
     
     member.meetings.push({ date: date, type: type, notes: notes, actions: actions });
-    localStorage.setItem('teamMembersData', JSON.stringify(teamMembers));
+    saveTeamData();
     
     document.getElementById('new-meeting-date').value = '';
     document.getElementById('new-meeting-type').value = '1:1';
@@ -1254,23 +1261,29 @@ document.getElementById('add-meeting-btn').addEventListener('click', function() 
 });
 
 // --- EXPORT AND IMPORT DATA ---
-exportBtn.addEventListener('click', function() {
-    const dataString = localStorage.getItem('teamMembersData');
-    
-    if (!dataString || teamMembers.length === 0) {
-        alert("You don't have any team members to export yet!");
-        return;
-    }
+exportBtn.addEventListener('click', async function() {
+    try {
+        const data = await localforage.getItem('teamMembersData');
+        
+        if (!data || data.length === 0) {
+            alert("You don't have any team members to export yet!");
+            return;
+        }
 
-    const blob = new Blob([dataString], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    
-    const downloadLink = document.createElement('a');
-    downloadLink.href = url;
-    downloadLink.download = "team-dashboard-backup.json";
-    downloadLink.click();
-    
-    URL.revokeObjectURL(url);
+        const dataString = typeof data === 'string' ? data : JSON.stringify(data);
+        const blob = new Blob([dataString], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        
+        const downloadLink = document.createElement('a');
+        downloadLink.href = url;
+        downloadLink.download = "team-dashboard-backup.json";
+        downloadLink.click();
+        
+        URL.revokeObjectURL(url);
+    } catch (err) {
+        console.error("Error exporting data", err);
+        alert("There was an issue exporting your data.");
+    }
 });
 
 importBtn.addEventListener('click', function() {
@@ -1283,11 +1296,11 @@ importFile.addEventListener('change', function(event) {
 
     const reader = new FileReader();
     
-    reader.onload = function(e) {
+    reader.onload = async function(e) {
         try {
             const importedData = JSON.parse(e.target.result);
             teamMembers = importedData;
-            localStorage.setItem('teamMembersData', JSON.stringify(teamMembers));
+            await localforage.setItem('teamMembersData', teamMembers);
             renderDashboard();
             alert("Data imported successfully!");
         } catch (error) {
@@ -1299,11 +1312,15 @@ importFile.addEventListener('change', function(event) {
 });
 
 // --- CLEAR STORAGE LOGIC ---
-clearBtn.addEventListener('click', function() {
+clearBtn.addEventListener('click', async function() {
     if (confirm("Are you sure you want to clear all team members? This cannot be undone.")) {
-        localStorage.removeItem('teamMembersData');
-        teamMembers = [];
-        renderDashboard();
+        try {
+            await localforage.removeItem('teamMembersData');
+            teamMembers = [];
+            renderDashboard();
+        } catch (err) {
+            console.error("Error clearing data", err);
+        }
     }
 });
 
@@ -1341,7 +1358,7 @@ editProfileForm.addEventListener('submit', function(event) {
     teamMembers[memberIndex].devLevel = document.getElementById('editDevLevel').value;
     teamMembers[memberIndex].leadStyle = document.getElementById('editLeadStyle').value;
     
-    localStorage.setItem('teamMembersData', JSON.stringify(teamMembers));
+    saveTeamData();
     
     editProfileModal.style.display = 'none';
     editProfileModal.classList.add('hidden');
@@ -1353,12 +1370,28 @@ editProfileForm.addEventListener('submit', function(event) {
 editProfileModal.style.display = 'none';
 
 // --- LOAD SAVED DATA ON STARTUP ---
-function loadSavedData() {
-    const savedData = localStorage.getItem('teamMembersData');
-    if (savedData) {
-        teamMembers = JSON.parse(savedData); 
+async function loadSavedData() {
+    try {
+        // 1. Check if there's old data in localStorage to migrate (so you don't lose data!)
+        const oldData = localStorage.getItem('teamMembersData');
+        if (oldData) {
+            teamMembers = JSON.parse(oldData);
+            await localforage.setItem('teamMembersData', teamMembers);
+            localStorage.removeItem('teamMembersData'); // clean up old data
+            console.log("Migrated data from localStorage to IndexedDB");
+        } else {
+            // 2. Otherwise load normally from IndexedDB
+            const savedData = await localforage.getItem('teamMembersData');
+            if (savedData) {
+                // localForage automatically parses objects, but we handle string just in case
+                teamMembers = typeof savedData === 'string' ? JSON.parse(savedData) : savedData; 
+            }
+        }
+        renderDashboard(); 
+    } catch (err) {
+        console.error("Error loading data", err);
+        renderDashboard(); // Render empty state if error
     }
-    renderDashboard(); 
 }
 
 loadSavedData();
