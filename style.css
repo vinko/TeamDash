@@ -98,31 +98,32 @@ main {
     background-color: #d1d1d6;
 }
 
+/* Make utility buttons (Edit, Delete, Expand) look like clean iOS text links */
 .btn-small {
     background-color: transparent;
-    border: 1px solid #d2d2d7;
-    color: #1d1d1f;
-    padding: 8px 16px;
+    border: none;
+    color: var(--apple-blue);
+    padding: 8px 12px;
     border-radius: 8px;
     font-size: 14px;
+    font-weight: 500;
     cursor: pointer;
-    min-height: 44px; /* Apple UI Guideline for touch targets */
+    min-height: 44px; /* Keeps the invisible touch target large for thumbs */
     display: inline-flex;
     align-items: center;
     justify-content: center;
 }
 
 .btn-small:hover {
-    background-color: #f5f5f7;
+    background-color: rgba(0, 113, 227, 0.1);
 }
 
 .btn-delete {
     color: #ff3b30; /* Apple Red */
-    border-color: #ff3b30;
 }
 
 .btn-delete:hover {
-    background-color: #fff0f0;
+    background-color: rgba(255, 59, 48, 0.1);
 }
 
 .button-group {
@@ -584,11 +585,19 @@ details.profile-section-accordion[open] > summary::after {
         gap: 0;
     }
     
-    /* Expand/Collapse buttons container */
+    /* Expand/Collapse buttons container - keep horizontal and centered */
     #profile-view > div[style*="justify-content: flex-end"] {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 10px;
+        flex-direction: row;
+        justify-content: center !important;
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+    
+    /* Edit/Delete buttons on cards - keep horizontal and right-aligned */
+    .card-actions {
+        flex-direction: row;
+        justify-content: flex-end;
+        gap: 5px;
     }
     
     /* Make small buttons much larger and easier to tap on mobile */
@@ -602,13 +611,7 @@ details.profile-section-accordion[open] > summary::after {
         background-color: #ffffff;
         box-shadow: 0 1px 3px rgba(0,0,0,0.05);
     }
-    
-    /* Edit/Delete buttons on cards */
-    .card-actions {
-        flex-direction: column;
-        gap: 10px;
-    }
-    
+        
     .card-actions .btn-small {
         width: 100%;
     }
