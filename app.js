@@ -1049,6 +1049,9 @@ document.getElementById('add-fyi-btn').addEventListener('click', function() {
     fyiSelect.value = '';
     document.getElementById('new-fyi-notes').value = '';
     renderTrackers(member);
+    
+    // Close the accordion after saving
+    this.closest('details').open = false;
 });
 
 document.getElementById('add-palette-btn').addEventListener('click', function() {
@@ -1066,6 +1069,9 @@ document.getElementById('add-palette-btn').addEventListener('click', function() 
     paletteSelect.value = '';
     document.getElementById('new-palette-notes').value = '';
     renderTrackers(member);
+    
+    // Close the accordion after saving
+    this.closest('details').open = false;
 });
 
 // --- RENDER SAVED GOALS ---
@@ -1117,6 +1123,9 @@ document.getElementById('add-goal-btn').addEventListener('click', function() {
     document.getElementById('new-goal-status').value = 'Not Started';
     
     renderGoals(member);
+    
+    // Close the accordion after saving
+    this.closest('details').open = false;
 });
 
 // --- EDIT AND DELETE LOGIC ---
@@ -1215,6 +1224,9 @@ document.getElementById('add-checkin-btn').addEventListener('click', function() 
     document.getElementById('new-checkin-actions').value = '';
     
     renderCheckIns(member);
+    
+    // Close the accordion after saving
+    this.closest('details').open = false;
 });
 
 // --- RENDER SAVED MEETINGS ---
@@ -1258,6 +1270,9 @@ document.getElementById('add-meeting-btn').addEventListener('click', function() 
     document.getElementById('new-meeting-actions').value = '';
     
     renderMeetings(member);
+    
+    // Close the accordion after saving
+    this.closest('details').open = false;
 });
 
 // --- EXPORT AND IMPORT DATA ---
