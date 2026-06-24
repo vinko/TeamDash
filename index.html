@@ -121,20 +121,22 @@
                 <summary>FYI Focus Competencies (Max 3)</summary>
                 <div class="accordion-content card-no-border">
                     <div id="fyi-list"></div>
-                    <div class="add-form-box" id="fyi-form-box">
-                        <h4>Add Focus Competency</h4>
-                        <div class="form-group"><select id="new-fyi-select"></select></div>
-                        <div class="form-group">
-                            <select id="new-fyi-rating">
-                                <option value="Less Skilled">Less Skilled</option>
-                                <option value="Skilled">Skilled</option>
-                                <option value="Talented">Talented</option>
-                                <option value="Overused">Overused</option>
-                            </select>
+                    <details class="add-item-details" id="fyi-form-box">
+                        <summary class="add-item-summary">+ Add Focus Competency</summary>
+                        <div class="add-form-box">
+                            <div class="form-group"><select id="new-fyi-select"></select></div>
+                            <div class="form-group">
+                                <select id="new-fyi-rating">
+                                    <option value="Less Skilled">Less Skilled</option>
+                                    <option value="Skilled">Skilled</option>
+                                    <option value="Talented">Talented</option>
+                                    <option value="Overused">Overused</option>
+                                </select>
+                            </div>
+                            <div class="form-group"><input type="text" id="new-fyi-notes" placeholder="Add notes or context..."></div>
+                            <button class="btn-secondary" id="add-fyi-btn">Save Competency</button>
                         </div>
-                        <div class="form-group"><input type="text" id="new-fyi-notes" placeholder="Add notes or context..."></div>
-                        <button class="btn-secondary" id="add-fyi-btn">+ Add Competency</button>
-                    </div>
+                    </details>
                 </div>
             </details>
 
@@ -143,20 +145,22 @@
                 <summary>Leadership Palette</summary>
                 <div class="accordion-content card-no-border">
                     <div id="palette-list"></div>
-                    <div class="add-form-box">
-                        <h4>Add Focus Attribute</h4>
-                        <div class="form-group"><select id="new-palette-select"></select></div>
-                        <div class="form-group">
-                            <select id="new-palette-rating">
-                                <option value="Less Skilled">Less Skilled</option>
-                                <option value="Skilled">Skilled</option>
-                                <option value="Talented">Talented</option>
-                                <option value="Overused">Overused</option>
-                            </select>
+                    <details class="add-item-details">
+                        <summary class="add-item-summary">+ Add Focus Attribute</summary>
+                        <div class="add-form-box">
+                            <div class="form-group"><select id="new-palette-select"></select></div>
+                            <div class="form-group">
+                                <select id="new-palette-rating">
+                                    <option value="Less Skilled">Less Skilled</option>
+                                    <option value="Skilled">Skilled</option>
+                                    <option value="Talented">Talented</option>
+                                    <option value="Overused">Overused</option>
+                                </select>
+                            </div>
+                            <div class="form-group"><input type="text" id="new-palette-notes" placeholder="Add notes or context..."></div>
+                            <button class="btn-secondary" id="add-palette-btn">Save Attribute</button>
                         </div>
-                        <div class="form-group"><input type="text" id="new-palette-notes" placeholder="Add notes or context..."></div>
-                        <button class="btn-secondary" id="add-palette-btn">+ Add Attribute</button>
-                    </div>
+                    </details>
                 </div>
             </details>
 
@@ -165,25 +169,27 @@
                 <summary>Development Goals</summary>
                 <div class="accordion-content card-no-border">
                     <div id="goals-list"></div>
-                    <div class="add-form-box">
-                        <h4>Add New Goal</h4>
-                        <div style="font-size: 13px; color: #6e6e73; margin-bottom: 15px; background-color: #e5e5ea; padding: 10px; border-radius: 8px;">
-                            <strong>Job Description:</strong> 
-                            <div id="goal-role-hint" style="margin-top: 10px;"></div>
+                    <details class="add-item-details">
+                        <summary class="add-item-summary">+ Add New Goal</summary>
+                        <div class="add-form-box">
+                            <div style="font-size: 13px; color: #6e6e73; margin-bottom: 15px; background-color: #e5e5ea; padding: 10px; border-radius: 8px;">
+                                <strong>Job Description:</strong> 
+                                <div id="goal-role-hint" style="margin-top: 10px;"></div>
+                            </div>
+                            <div class="form-group"><input type="text" id="new-goal-title" placeholder="Goal Title" required></div>
+                            <div class="form-group"><textarea id="new-goal-desc" placeholder="Goal Description..." rows="3" style="padding: 12px; border: 1px solid #d2d2d7; border-radius: 10px; font-family: inherit; font-size: 16px;"></textarea></div>
+                            <div class="form-group"><label>Target Date</label><input type="date" id="new-goal-date" required></div>
+                            <div class="form-group">
+                                <label>Status</label>
+                                <select id="new-goal-status">
+                                    <option value="Not Started">Not Started</option>
+                                    <option value="In Progress">In Progress</option>
+                                    <option value="Complete">Complete</option>
+                                </select>
+                            </div>
+                            <button class="btn-secondary" id="add-goal-btn">Save Goal</button>
                         </div>
-                        <div class="form-group"><input type="text" id="new-goal-title" placeholder="Goal Title" required></div>
-                        <div class="form-group"><textarea id="new-goal-desc" placeholder="Goal Description..." rows="3" style="padding: 12px; border: 1px solid #d2d2d7; border-radius: 10px; font-family: inherit; font-size: 16px;"></textarea></div>
-                        <div class="form-group"><label>Target Date</label><input type="date" id="new-goal-date" required></div>
-                        <div class="form-group">
-                            <label>Status</label>
-                            <select id="new-goal-status">
-                                <option value="Not Started">Not Started</option>
-                                <option value="In Progress">In Progress</option>
-                                <option value="Complete">Complete</option>
-                            </select>
-                        </div>
-                        <button class="btn-secondary" id="add-goal-btn">+ Add Goal</button>
-                    </div>
+                    </details>
                 </div>
             </details>
 
@@ -192,14 +198,16 @@
                 <summary>Check-in Notes</summary>
                 <div class="accordion-content card-no-border">
                     <div id="checkins-list"></div>
-                    <div class="add-form-box">
-                        <h4>Log a Check-in</h4>
-                        <div class="form-group"><label>Date</label><input type="date" id="new-checkin-date" required></div>
-                        <div class="form-group"><input type="text" id="new-checkin-summary" placeholder="Summary" required></div>
-                        <div class="form-group"><textarea id="new-checkin-obs" placeholder="Key Observations..." rows="2" style="padding: 12px; border: 1px solid #d2d2d7; border-radius: 10px; font-family: inherit; font-size: 14px;"></textarea></div>
-                        <div class="form-group"><textarea id="new-checkin-actions" placeholder="Agreed Actions..." rows="2" style="padding: 12px; border: 1px solid #d2d2d7; border-radius: 10px; font-family: inherit; font-size: 14px;"></textarea></div>
-                        <button class="btn-secondary" id="add-checkin-btn">+ Log Check-in</button>
-                    </div>
+                    <details class="add-item-details">
+                        <summary class="add-item-summary">+ Log a Check-in</summary>
+                        <div class="add-form-box">
+                            <div class="form-group"><label>Date</label><input type="date" id="new-checkin-date" required></div>
+                            <div class="form-group"><input type="text" id="new-checkin-summary" placeholder="Summary" required></div>
+                            <div class="form-group"><textarea id="new-checkin-obs" placeholder="Key Observations..." rows="2" style="padding: 12px; border: 1px solid #d2d2d7; border-radius: 10px; font-family: inherit; font-size: 14px;"></textarea></div>
+                            <div class="form-group"><textarea id="new-checkin-actions" placeholder="Agreed Actions..." rows="2" style="padding: 12px; border: 1px solid #d2d2d7; border-radius: 10px; font-family: inherit; font-size: 14px;"></textarea></div>
+                            <button class="btn-secondary" id="add-checkin-btn">Save Check-in</button>
+                        </div>
+                    </details>
                 </div>
             </details>
 
@@ -208,21 +216,23 @@
                 <summary>Meeting History</summary>
                 <div class="accordion-content card-no-border">
                     <div id="meetings-list"></div>
-                    <div class="add-form-box">
-                        <h4>Log a Meeting</h4>
-                        <div class="form-group"><label>Date</label><input type="date" id="new-meeting-date" required></div>
-                        <div class="form-group">
-                            <label>Meeting Type</label>
-                            <select id="new-meeting-type">
-                                <option value="1:1">1:1</option>
-                                <option value="Development">Development</option>
-                                <option value="Performance">Performance</option>
-                            </select>
+                    <details class="add-item-details">
+                        <summary class="add-item-summary">+ Log a Meeting</summary>
+                        <div class="add-form-box">
+                            <div class="form-group"><label>Date</label><input type="date" id="new-meeting-date" required></div>
+                            <div class="form-group">
+                                <label>Meeting Type</label>
+                                <select id="new-meeting-type">
+                                    <option value="1:1">1:1</option>
+                                    <option value="Development">Development</option>
+                                    <option value="Performance">Performance</option>
+                                </select>
+                            </div>
+                            <div class="form-group"><textarea id="new-meeting-notes" placeholder="Meeting Notes..." rows="2" style="padding: 12px; border: 1px solid #d2d2d7; border-radius: 10px; font-family: inherit; font-size: 14px;"></textarea></div>
+                            <div class="form-group"><textarea id="new-meeting-actions" placeholder="Follow-up Actions..." rows="2" style="padding: 12px; border: 1px solid #d2d2d7; border-radius: 10px; font-family: inherit; font-size: 14px;"></textarea></div>
+                            <button class="btn-secondary" id="add-meeting-btn">Save Meeting</button>
                         </div>
-                        <div class="form-group"><textarea id="new-meeting-notes" placeholder="Meeting Notes..." rows="2" style="padding: 12px; border: 1px solid #d2d2d7; border-radius: 10px; font-family: inherit; font-size: 14px;"></textarea></div>
-                        <div class="form-group"><textarea id="new-meeting-actions" placeholder="Follow-up Actions..." rows="2" style="padding: 12px; border: 1px solid #d2d2d7; border-radius: 10px; font-family: inherit; font-size: 14px;"></textarea></div>
-                        <button class="btn-secondary" id="add-meeting-btn">+ Log Meeting</button>
-                    </div>
+                    </details>
                 </div>
             </details>
 
