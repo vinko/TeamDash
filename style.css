@@ -574,7 +574,7 @@ details.profile-section-accordion[open] > summary::after {
 
 /* --- RESPONSIVE MEDIA QUERIES FOR MOBILE (iPHONE) --- */
 @media (max-width: 600px) {
-    /* Stack buttons full-width on mobile */
+    /* Stack MAIN buttons full-width on mobile */
     .btn-primary, .btn-secondary {
         width: 100%;
         margin-bottom: 10px;
@@ -585,26 +585,30 @@ details.profile-section-accordion[open] > summary::after {
         gap: 0;
     }
     
-    /* Expand/Collapse buttons container - keep horizontal and centered */
+    /* Expand/Collapse buttons - keep horizontal and centered */
     #profile-view > div[style*="justify-content: flex-end"] {
-        flex-direction: row;
+        display: flex !important;
+        flex-direction: row !important;
         justify-content: center !important;
-        flex-wrap: wrap;
-        gap: 5px;
+        flex-wrap: wrap !important;
+        gap: 10px !important;
     }
     
-        /* Edit/Delete buttons on cards - force them to be side-by-side */
+    /* Edit/Delete buttons - force side-by-side, no wrapping */
     .card-actions {
         display: flex !important;
         flex-direction: row !important;
         justify-content: flex-end !important;
+        flex-wrap: nowrap !important;
         gap: 15px !important;
-        width: 100%;
+        margin-top: 10px !important;
     }
     
-    .card-actions .btn-small {
+    /* Strip all width sizing from small buttons */
+    .btn-small, .card-actions .btn-small {
         width: auto !important;
-        flex: none !important;
+        flex: 0 1 auto !important;
+        margin-bottom: 0 !important;
     }
     
     .dashboard-header {
