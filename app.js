@@ -1079,7 +1079,7 @@ function renderGoals(member) {
     const goalsList = document.getElementById('goals-list');
     goalsList.innerHTML = ''; 
 
-    member.goals.forEach(function(goal) {
+    member.goals.forEach(function(goal, index) {
         let statusClass = 'status-' + goal.status.replace(' ', '-');
 
         goalsList.innerHTML += `
@@ -1091,6 +1091,10 @@ function renderGoals(member) {
                 <p class="goal-desc">${goal.description}</p>
                 <div class="goal-meta">
                     <span><strong>Target Date:</strong> ${goal.date}</span>
+                </div>
+                <div class="card-actions">
+                    <button class="btn-small" onclick="openEditModal('goals', ${index})">Edit</button>
+                    <button class="btn-small btn-delete" onclick="deleteItem('goals', ${index})">Delete</button>
                 </div>
             </div>
         `;
@@ -1136,16 +1140,52 @@ function openEditModal(type, index) {
     editingType = type;
     editingIndex = index;
 
-    document.getElementById('edit-modal-title').textContent = "Edit: " + item.name;
-    
-    let currentRating = item.rating;
-    if (currentRating === "1") currentRating = "Less Skilled";
-    if (currentRating === "2") currentRating = "Skilled";
-    if (currentRating === "3") currentRating = "Talented";
-    if (currentRating === "4" || currentRating === "5") currentRating = "Overused";
-    
-    document.getElementById('edit-rating').value = currentRating;
-    document.getElementById('edit-notes').value = item.notes;
+    // Hide all field groups first
+    document.getElementById('edit-tracker-fields').classList.add('hidden');
+    document.getElementById('edit-goal-fields').classList.add('hidden');
+    document.getElementById('edit-checkin-fields').classList.add('hidden');
+    document.getElementById('edit-meeting-fields').classList.add('hidden');
+
+    if (type === 'competencies' || type === 'palette') {
+        document.getElementById('edit-modal-title').textContent = "Edit: " + item.name;
+        document.getElementById('edit-tracker-fields').classList.remove('hidden');
+        
+        let currentRating = item.rating;
+        if (currentRating === "1") currentRating = "Less Skilled";
+        if (currentRating === "2") currentRating = "Skilled";
+        if (currentRating === "3") currentRating = "Talented";
+        if (currentRating === "4" || currentRating === "5") currentRating = "Overused";
+        
+        document.getElementById('edit-rating').value = currentRating;
+        document.getElementById('edit-notes').value = item.notes;
+    } 
+    else if (type === 'goals') {
+        document.getElementById('edit-modal-title').textContent = "Edit Goal";
+        document.getElementById('edit-goal-fields').classList.remove('hidden');
+        
+        document.getElementById('edit-goal-title').value = item.title;
+        document.getElementById('edit-goal-desc').value = item.description;
+        document.getElementById('edit-goal-date').value = item.date;
+        document.getElementById('edit-goal-status').value = item.status;
+    }
+    else if (type === 'checkIns') {
+        document.getElementById('edit-modal-title').textContent = "Edit Check-in";
+        document.getElementById('edit-checkin-fields').classList.remove('hidden');
+        
+        document.getElementById('edit-checkin-date').value = item.date;
+        document.getElementById('edit-checkin-summary').value = item.summary;
+        document.getElementById('edit-checkin-obs').value = item.observations;
+        document.getElementById('edit-checkin-actions').value = item.actions;
+    }
+    else if (type === 'meetings') {
+        document.getElementById('edit-modal-title').textContent = "Edit Meeting";
+        document.getElementById('edit-meeting-fields').classList.remove('hidden');
+        
+        document.getElementById('edit-meeting-date').value = item.date;
+        document.getElementById('edit-meeting-type').value = item.type;
+        document.getElementById('edit-meeting-notes').value = item.notes;
+        document.getElementById('edit-meeting-actions').value = item.actions;
+    }
 
     editModal.style.display = 'flex'; 
     editModal.classList.remove('hidden');
@@ -1158,15 +1198,39 @@ document.getElementById('cancel-edit-btn').addEventListener('click', function() 
 
 document.getElementById('save-edit-btn').addEventListener('click', function() {
     const member = teamMembers.find(m => m.id === currentViewedMemberId);
+    const item = member[editingType][editingIndex];
     
-    member[editingType][editingIndex].rating = document.getElementById('edit-rating').value;
-    member[editingType][editingIndex].notes = document.getElementById('edit-notes').value;
+    if (editingType === 'competencies' || editingType === 'palette') {
+        item.rating = document.getElementById('edit-rating').value;
+        item.notes = document.getElementById('edit-notes').value;
+        renderTrackers(member);
+    }
+    else if (editingType === 'goals') {
+        item.title = document.getElementById('edit-goal-title').value;
+        item.description = document.getElementById('edit-goal-desc').value;
+        item.date = document.getElementById('edit-goal-date').value;
+        item.status = document.getElementById('edit-goal-status').value;
+        renderGoals(member);
+    }
+    else if (editingType === 'checkIns') {
+        item.date = document.getElementById('edit-checkin-date').value;
+        item.summary = document.getElementById('edit-checkin-summary').value;
+        item.observations = document.getElementById('edit-checkin-obs').value;
+        item.actions = document.getElementById('edit-checkin-actions').value;
+        renderCheckIns(member);
+    }
+    else if (editingType === 'meetings') {
+        item.date = document.getElementById('edit-meeting-date').value;
+        item.type = document.getElementById('edit-meeting-type').value;
+        item.notes = document.getElementById('edit-meeting-notes').value;
+        item.actions = document.getElementById('edit-meeting-actions').value;
+        renderMeetings(member);
+    }
 
     saveTeamData();
     
     editModal.style.display = 'none';
     editModal.classList.add('hidden');
-    renderTrackers(member);
 });
 
 function deleteItem(type, index) {
@@ -1178,7 +1242,11 @@ function deleteItem(type, index) {
     member[type].splice(index, 1);
     
     saveTeamData();
-    renderTrackers(member);
+    
+    if (type === 'competencies' || type === 'palette') renderTrackers(member);
+    else if (type === 'goals') renderGoals(member);
+    else if (type === 'checkIns') renderCheckIns(member);
+    else if (type === 'meetings') renderMeetings(member);
 }
 
 editModal.style.display = 'none';
@@ -1190,7 +1258,7 @@ function renderCheckIns(member) {
 
     const sortedCheckIns = member.checkIns.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-    sortedCheckIns.forEach(function(checkin) {
+    sortedCheckIns.forEach(function(checkin, index) {
         checkinsList.innerHTML += `
             <div class="item-card">
                 <div class="item-header">
@@ -1199,6 +1267,10 @@ function renderCheckIns(member) {
                 </div>
                 <p class="goal-desc"><strong>Observations:</strong><br>${checkin.observations.replace(/\n/g, '<br>')}</p>
                 <p class="goal-desc" style="margin-top: 10px;"><strong>Agreed Actions:</strong><br>${checkin.actions.replace(/\n/g, '<br>')}</p>
+                <div class="card-actions">
+                    <button class="btn-small" onclick="openEditModal('checkIns', ${index})">Edit</button>
+                    <button class="btn-small btn-delete" onclick="deleteItem('checkIns', ${index})">Delete</button>
+                </div>
             </div>
         `;
     });
@@ -1236,7 +1308,7 @@ function renderMeetings(member) {
 
     const sortedMeetings = member.meetings.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-    sortedMeetings.forEach(function(meeting) {
+    sortedMeetings.forEach(function(meeting, index) {
         meetingsList.innerHTML += `
             <div class="item-card">
                 <div class="item-header">
@@ -1245,6 +1317,10 @@ function renderMeetings(member) {
                 </div>
                 <p class="goal-desc"><strong>Notes:</strong><br>${meeting.notes.replace(/\n/g, '<br>')}</p>
                 <p class="goal-desc" style="margin-top: 10px;"><strong>Follow-up Actions:</strong><br>${meeting.actions.replace(/\n/g, '<br>')}</p>
+                <div class="card-actions">
+                    <button class="btn-small" onclick="openEditModal('meetings', ${index})">Edit</button>
+                    <button class="btn-small btn-delete" onclick="deleteItem('meetings', ${index})">Delete</button>
+                </div>
             </div>
         `;
     });
