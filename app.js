@@ -517,7 +517,7 @@ const appleRoles = {
             <li>Demonstrate integrity</li>
         </ul>`
     },
-
+    
     "Lead Genius": {
         description: `Helps our team deliver exceptional customer experiences by supporting a culture of human connection at the Genius Bar while delivering same-day help and timely repairs for customers. Assists the leadership team with day-to-day responsibilities and drives operational readiness and sustainability of the Genius Bar and Repair Room.<br><br><strong>In this role you'll:</strong>
         <details class="role-accordion"><summary>Have extensive knowledge and stay up to date on all Apple products...</summary><div class="accordion-content">
@@ -1142,13 +1142,21 @@ function openEditModal(type, index) {
 
     // Hide all field groups first
     document.getElementById('edit-tracker-fields').classList.add('hidden');
+    document.getElementById('edit-tracker-fields').style.display = 'none';
+    
     document.getElementById('edit-goal-fields').classList.add('hidden');
+    document.getElementById('edit-goal-fields').style.display = 'none';
+    
     document.getElementById('edit-checkin-fields').classList.add('hidden');
+    document.getElementById('edit-checkin-fields').style.display = 'none';
+    
     document.getElementById('edit-meeting-fields').classList.add('hidden');
+    document.getElementById('edit-meeting-fields').style.display = 'none';
 
     if (type === 'competencies' || type === 'palette') {
         document.getElementById('edit-modal-title').textContent = "Edit: " + item.name;
         document.getElementById('edit-tracker-fields').classList.remove('hidden');
+        document.getElementById('edit-tracker-fields').style.display = 'block';
         
         let currentRating = item.rating;
         if (currentRating === "1") currentRating = "Less Skilled";
@@ -1162,6 +1170,7 @@ function openEditModal(type, index) {
     else if (type === 'goals') {
         document.getElementById('edit-modal-title').textContent = "Edit Goal";
         document.getElementById('edit-goal-fields').classList.remove('hidden');
+        document.getElementById('edit-goal-fields').style.display = 'block';
         
         document.getElementById('edit-goal-title').value = item.title;
         document.getElementById('edit-goal-desc').value = item.description;
@@ -1171,6 +1180,7 @@ function openEditModal(type, index) {
     else if (type === 'checkIns') {
         document.getElementById('edit-modal-title').textContent = "Edit Check-in";
         document.getElementById('edit-checkin-fields').classList.remove('hidden');
+        document.getElementById('edit-checkin-fields').style.display = 'block';
         
         document.getElementById('edit-checkin-date').value = item.date;
         document.getElementById('edit-checkin-summary').value = item.summary;
@@ -1180,6 +1190,7 @@ function openEditModal(type, index) {
     else if (type === 'meetings') {
         document.getElementById('edit-modal-title').textContent = "Edit Meeting";
         document.getElementById('edit-meeting-fields').classList.remove('hidden');
+        document.getElementById('edit-meeting-fields').style.display = 'block';
         
         document.getElementById('edit-meeting-date').value = item.date;
         document.getElementById('edit-meeting-type').value = item.type;
