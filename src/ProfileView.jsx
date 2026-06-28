@@ -73,9 +73,10 @@ export default function ProfileView({ member, onBack, onUpdateMember }) {
 
   // --- EDIT HANDLERS ---
   const openEditModal = (type, index) => {
+    // Make sure we pass a deep copy of the object so we don't accidentally mutate state directly
     setEditType(type);
     setEditIndex(index);
-    setEditData(member[type][index]);
+    setEditData({ ...member[type][index] });
     setEditModalOpen(true);
   };
 
@@ -384,25 +385,25 @@ export default function ProfileView({ member, onBack, onUpdateMember }) {
               <>
                 <div className="form-group">
                   <label>Rating</label>
-                  <select value={editData.rating} onChange={e => setEditData({...editData, rating: e.target.value})}>
+                  <select value={editData.rating || 'Less Skilled'} onChange={e => setEditData({...editData, rating: e.target.value})}>
                     <option value="Less Skilled">Less Skilled</option>
                     <option value="Skilled">Skilled</option>
                     <option value="Talented">Talented</option>
                     <option value="Overused">Overused</option>
                   </select>
                 </div>
-                <div className="form-group"><label>Notes</label><input type="text" value={editData.notes} onChange={e => setEditData({...editData, notes: e.target.value})} /></div>
+                <div className="form-group"><label>Notes</label><input type="text" value={editData.notes || ''} onChange={e => setEditData({...editData, notes: e.target.value})} /></div>
               </>
             )}
 
             {editType === 'goals' && (
               <>
-                <div className="form-group"><label>Title</label><input type="text" value={editData.title} onChange={e => setEditData({...editData, title: e.target.value})} /></div>
-                <div className="form-group"><label>Description</label><textarea rows="3" value={editData.description} onChange={e => setEditData({...editData, description: e.target.value})}></textarea></div>
-                <div className="form-group"><label>Target Date</label><input type="date" value={editData.date} onChange={e => setEditData({...editData, date: e.target.value})} /></div>
+                <div className="form-group"><label>Title</label><input type="text" value={editData.title || ''} onChange={e => setEditData({...editData, title: e.target.value})} /></div>
+                <div className="form-group"><label>Description</label><textarea rows="3" value={editData.description || ''} onChange={e => setEditData({...editData, description: e.target.value})}></textarea></div>
+                <div className="form-group"><label>Target Date</label><input type="date" value={editData.date || ''} onChange={e => setEditData({...editData, date: e.target.value})} /></div>
                 <div className="form-group">
                   <label>Status</label>
-                  <select value={editData.status} onChange={e => setEditData({...editData, status: e.target.value})}>
+                  <select value={editData.status || 'Not Started'} onChange={e => setEditData({...editData, status: e.target.value})}>
                     <option value="Not Started">Not Started</option>
                     <option value="In Progress">In Progress</option>
                     <option value="Complete">Complete</option>
@@ -413,26 +414,26 @@ export default function ProfileView({ member, onBack, onUpdateMember }) {
 
             {editType === 'checkIns' && (
               <>
-                <div className="form-group"><label>Date</label><input type="date" value={editData.date} onChange={e => setEditData({...editData, date: e.target.value})} /></div>
-                <div className="form-group"><label>Summary</label><input type="text" value={editData.summary} onChange={e => setEditData({...editData, summary: e.target.value})} /></div>
-                <div className="form-group"><label>Observations</label><textarea rows="2" value={editData.observations} onChange={e => setEditData({...editData, observations: e.target.value})}></textarea></div>
-                <div className="form-group"><label>Agreed Actions</label><textarea rows="2" value={editData.actions} onChange={e => setEditData({...editData, actions: e.target.value})}></textarea></div>
+                <div className="form-group"><label>Date</label><input type="date" value={editData.date || ''} onChange={e => setEditData({...editData, date: e.target.value})} /></div>
+                <div className="form-group"><label>Summary</label><input type="text" value={editData.summary || ''} onChange={e => setEditData({...editData, summary: e.target.value})} /></div>
+                <div className="form-group"><label>Observations</label><textarea rows="2" value={editData.observations || ''} onChange={e => setEditData({...editData, observations: e.target.value})}></textarea></div>
+                <div className="form-group"><label>Agreed Actions</label><textarea rows="2" value={editData.actions || ''} onChange={e => setEditData({...editData, actions: e.target.value})}></textarea></div>
               </>
             )}
 
             {editType === 'meetings' && (
               <>
-                <div className="form-group"><label>Date</label><input type="date" value={editData.date} onChange={e => setEditData({...editData, date: e.target.value})} /></div>
+                <div className="form-group"><label>Date</label><input type="date" value={editData.date || ''} onChange={e => setEditData({...editData, date: e.target.value})} /></div>
                 <div className="form-group">
                   <label>Meeting Type</label>
-                  <select value={editData.type} onChange={e => setEditData({...editData, type: e.target.value})}>
+                  <select value={editData.type || '1:1'} onChange={e => setEditData({...editData, type: e.target.value})}>
                     <option value="1:1">1:1</option>
                     <option value="Development">Development</option>
                     <option value="Performance">Performance</option>
                   </select>
                 </div>
-                <div className="form-group"><label>Notes</label><textarea rows="2" value={editData.notes} onChange={e => setEditData({...editData, notes: e.target.value})}></textarea></div>
-                <div className="form-group"><label>Follow-up Actions</label><textarea rows="2" value={editData.actions} onChange={e => setEditData({...editData, actions: e.target.value})}></textarea></div>
+                <div className="form-group"><label>Notes</label><textarea rows="2" value={editData.notes || ''} onChange={e => setEditData({...editData, notes: e.target.value})}></textarea></div>
+                <div className="form-group"><label>Follow-up Actions</label><textarea rows="2" value={editData.actions || ''} onChange={e => setEditData({...editData, actions: e.target.value})}></textarea></div>
               </>
             )}
 
