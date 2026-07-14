@@ -1,82 +1,36 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
-import localforage from 'localforage';
+import { useTeamData } from './hooks/useTeamData';
 import AddMemberForm from './AddMemberForm';
 import ProfileView from './ProfileView';
 
 export default function App() {
-  const [teamMembers, setTeamMembers] = useState([]);
+  const { 
+    teamMembers, 
+    isLoading, 
+    addMember, 
+    updateMember, 
+    clearStorage, 
+    exportData, 
+    importData 
+  } = useTeamData();
+  
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
-  
-  // Load data from IndexedDB on startup
-  useEffect(() => {
-    localforage.getItem('teamMembersData').then(data => {
-      if (data) {
-        setTeamMembers(typeof data === 'string' ? JSON.parse(data) : data);
-      }
-    });
-  }, []);
-
-  const saveTeamData = async (newMembers) => {
-    setTeamMembers(newMembers);
-    await localforage.setItem('teamMembersData', newMembers);
-  };
-
-  const clearStorage = async () => {
-    if (window.confirm("Are you sure you want to clear all team members? This cannot be undone.")) {
-      await localforage.removeItem('teamMembersData');
-      setTeamMembers([]);
-    }
-  };
-
-  const handleAddMember = async (newMember) => {
-    const updated = [...teamMembers, newMember];
-    await saveTeamData(updated);
-    navigate('/');
-  };
-
-  const handleUpdateMember = async (updatedMember) => {
-    const updated = teamMembers.map(m => m.id === updatedMember.id ? updatedMember : m);
-    await saveTeamData(updated);
-  };
-
-  const handleExport = async () => {
-    try {
-      if (teamMembers.length === 0) return alert("You don't have any team members to export yet!");
-      const dataString = JSON.stringify(teamMembers);
-      const blob = new Blob([dataString], { type: "application/json" });
-      const url = URL.createObjectURL(blob);
-      const downloadLink = document.createElement('a');
-      downloadLink.href = url;
-      downloadLink.download = "team-dashboard-backup.json";
-      downloadLink.click();
-      URL.revokeObjectURL(url);
-    } catch (err) {
-      console.error("Error exporting data", err);
-      alert("There was an issue exporting your data.");
-    }
-  };
 
   const handleImportClick = () => {
     fileInputRef.current.click();
   };
 
   const handleImportFile = async (event) => {
-    const file = event.target.files[0];
-    if (!file) return; 
-    const reader = new FileReader();
-    reader.onload = async function(e) {
-        try {
-            const importedData = JSON.parse(e.target.result);
-            await saveTeamData(importedData);
-            alert("Data imported successfully!");
-        } catch (error) {
-            alert("Oops! There was an error reading that file. Make sure it's the correct backup file.");
-        }
-    };
-    reader.readAsText(file);
+    await importData(event.target.files[0]);
+    // Reset the input so the same file can be imported again if needed
+    event.target.value = null; 
   };
+
+  if (isLoading) {
+    return <div style={{ textAlign: 'center', marginTop: '50px' }}>Loading Dashboard...</div>;
+  }
 
   return (
     <div className="app-container">
@@ -119,7 +73,7 @@ export default function App() {
               </div>
 
               <div className="data-management-container">
-                <button className="btn-secondary" onClick={handleExport}>⬇️ Export Data</button>
+                <button className="btn-secondary" onClick={exportData}>⬇️ Export Data</button>
                 <input type="file" ref={fileInputRef} accept=".json" className="hidden" onChange={handleImportFile} />
                 <button className="btn-secondary" onClick={handleImportClick}>⬆️ Import Data</button>
                 <button className="btn-secondary" style={{color: 'red'}} onClick={clearStorage}>🗑️ Clear Storage</button>
@@ -130,7 +84,10 @@ export default function App() {
           {/* ADD MEMBER ROUTE */}
           <Route path="/add" element={
             <AddMemberForm 
-              onSave={handleAddMember} 
+              onSave={async (newMember) => {
+                await addMember(newMember);
+                navigate('/');
+              }} 
               onCancel={() => navigate('/')} 
             />
           } />
@@ -140,7 +97,7 @@ export default function App() {
             <ProfileViewWrapper 
               teamMembers={teamMembers} 
               onBack={() => navigate('/')} 
-              onUpdateMember={handleUpdateMember} 
+              onUpdateMember={updateMember} 
             />
           } />
         </Routes>
