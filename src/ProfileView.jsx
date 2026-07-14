@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { appleRoles, fyiCompetencies, leadershipPalette, roleCategories } from './data.js';
 
 export default function ProfileView({ member, onBack, onUpdateMember }) {
@@ -108,6 +108,25 @@ export default function ProfileView({ member, onBack, onUpdateMember }) {
     onUpdateMember({ ...member, ...profileEditData });
     setProfileEditOpen(false);
   };
+
+  // --- MODAL CLICK-OUTSIDE HANDLERS ---
+  const handleModalBackdropClick = (e, closeFunction) => {
+    if (e.target === e.currentTarget) {
+      closeFunction();
+    }
+  };
+
+  // Handle Escape key to close modals
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setEditModalOpen(false);
+        setProfileEditOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   return (
     <div id="profile-view">
@@ -377,7 +396,10 @@ export default function ProfileView({ member, onBack, onUpdateMember }) {
 
       {/* --- ITEM EDIT MODAL --- */}
       {editModalOpen && (
-        <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
+        <div 
+          onClick={(e) => handleModalBackdropClick(e, () => setEditModalOpen(false))}
+          style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}
+        >
           <div className="card" style={{ width: '90%', maxWidth: '400px', maxHeight: '90vh', overflowY: 'auto' }}>
             <h3 style={{ marginTop: 0 }}>Edit Item</h3>
             
@@ -447,7 +469,10 @@ export default function ProfileView({ member, onBack, onUpdateMember }) {
 
       {/* --- PROFILE EDIT MODAL --- */}
       {profileEditOpen && (
-        <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
+        <div 
+          onClick={(e) => handleModalBackdropClick(e, () => setProfileEditOpen(false))}
+          style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}
+        >
           <div className="card" style={{ width: '90%', maxWidth: '500px', maxHeight: '90vh', overflowY: 'auto' }}>
             <h3 style={{ marginTop: 0 }}>Edit Team Member</h3>
             <form onSubmit={saveProfileEdit}>
