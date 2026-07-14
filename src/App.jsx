@@ -1,8 +1,25 @@
 import React, { useRef } from 'react';
-import { Routes, Route, useNavigate } from 'react-router-dom';
+import { Routes, Route, useNavigate, useParams } from 'react-router-dom';
 import { useTeamData } from './hooks/useTeamData';
 import AddMemberForm from './AddMemberForm';
 import ProfileView from './ProfileView';
+
+// A small wrapper component to extract the ID from the URL and find the correct member
+function ProfileViewWrapper({ teamMembers, onBack, onUpdateMember }) {
+  const { id } = useParams();
+  const member = teamMembers.find(m => m.id.toString() === id);
+
+  if (!member) {
+    return (
+      <div style={{ textAlign: 'center', marginTop: '50px' }}>
+        <h2>Member not found</h2>
+        <button className="btn-primary" onClick={onBack}>Return to Dashboard</button>
+      </div>
+    );
+  }
+
+  return <ProfileView member={member} onBack={onBack} onUpdateMember={onUpdateMember} />;
+}
 
 export default function App() {
   const { 
@@ -104,22 +121,4 @@ export default function App() {
       </main>
     </div>
   );
-}
-
-// A small wrapper component to extract the ID from the URL and find the correct member
-import { useParams } from 'react-router-dom';
-function ProfileViewWrapper({ teamMembers, onBack, onUpdateMember }) {
-  const { id } = useParams();
-  const member = teamMembers.find(m => m.id.toString() === id);
-
-  if (!member) {
-    return (
-      <div style={{ textAlign: 'center', marginTop: '50px' }}>
-        <h2>Member not found</h2>
-        <button className="btn-primary" onClick={onBack}>Return to Dashboard</button>
-      </div>
-    );
-  }
-
-  return <ProfileView member={member} onBack={onBack} onUpdateMember={onUpdateMember} />;
 }
