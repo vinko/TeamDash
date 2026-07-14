@@ -1,60 +1,26 @@
-import React, { useState, useEffect, useRef } from 'react';
-import localforage from 'localforage';
+import React, { useState, useRef } from 'react';
 import AddMemberForm from './AddMemberForm';
 import ProfileView from './ProfileView';
+import { useTeamData } from './useTeamData';
 
 export default function App() {
-  const [teamMembers, setTeamMembers] = useState([]);
+  const { 
+    teamMembers, 
+    isLoading, 
+    addMember, 
+    updateMember, 
+    clearMembers, 
+    exportMembers, 
+    importMembers 
+  } = useTeamData();
+
   const [view, setView] = useState('dashboard'); // 'dashboard', 'form', 'profile'
   const [currentMemberId, setCurrentMemberId] = useState(null);
   const fileInputRef = useRef(null);
-  
-  // Load data from IndexedDB on startup
-  useEffect(() => {
-    localforage.getItem('teamMembersData').then(data => {
-      if (data) {
-        setTeamMembers(typeof data === 'string' ? JSON.parse(data) : data);
-      }
-    });
-  }, []);
 
-  const saveTeamData = async (newMembers) => {
-    setTeamMembers(newMembers);
-    await localforage.setItem('teamMembersData', newMembers);
-  };
-
-  const clearStorage = async () => {
+  const handleClearStorage = () => {
     if (window.confirm("Are you sure you want to clear all team members? This cannot be undone.")) {
-      await localforage.removeItem('teamMembersData');
-      setTeamMembers([]);
-    }
-  };
-
-  const handleAddMember = async (newMember) => {
-    const updated = [...teamMembers, newMember];
-    await saveTeamData(updated);
-    setView('dashboard');
-  };
-
-  const handleUpdateMember = async (updatedMember) => {
-    const updated = teamMembers.map(m => m.id === updatedMember.id ? updatedMember : m);
-    await saveTeamData(updated);
-  };
-
-  const handleExport = async () => {
-    try {
-      if (teamMembers.length === 0) return alert("You don't have any team members to export yet!");
-      const dataString = JSON.stringify(teamMembers);
-      const blob = new Blob([dataString], { type: "application/json" });
-      const url = URL.createObjectURL(blob);
-      const downloadLink = document.createElement('a');
-      downloadLink.href = url;
-      downloadLink.download = "team-dashboard-backup.json";
-      downloadLink.click();
-      URL.revokeObjectURL(url);
-    } catch (err) {
-      console.error("Error exporting data", err);
-      alert("There was an issue exporting your data.");
+      clearMembers();
     }
   };
 
@@ -62,21 +28,15 @@ export default function App() {
     fileInputRef.current.click();
   };
 
-  const handleImportFile = async (event) => {
-    const file = event.target.files[0];
-    if (!file) return; 
-    const reader = new FileReader();
-    reader.onload = async function(e) {
-        try {
-            const importedData = JSON.parse(e.target.result);
-            await saveTeamData(importedData);
-            alert("Data imported successfully!");
-        } catch (error) {
-            alert("Oops! There was an error reading that file. Make sure it's the correct backup file.");
-        }
-    };
-    reader.readAsText(file);
+  const handleImportFile = (event) => {
+    importMembers(event.target.files[0]);
+    // Reset input so the same file can be selected again if needed
+    event.target.value = null;
   };
+
+  if (isLoading) {
+    return <div style={{ textAlign: 'center', marginTop: '50px' }}>Loading...</div>;
+  }
 
   return (
     <div className="app-container">
@@ -89,7 +49,7 @@ export default function App() {
         {view === 'dashboard' && (
           <div id="dashboard-view">
             <div className="dashboard-header">
-              <h2>My Team (React Version)</h2>
+              <h2>My Team</h2>
               <button className="btn-primary" onClick={() => setView('form')}>+ Add Team Member</button>
             </div>
             
@@ -122,10 +82,10 @@ export default function App() {
             </div>
 
             <div className="data-management-container">
-              <button className="btn-secondary" onClick={handleExport}>⬇️ Export Data</button>
+              <button className="btn-secondary" onClick={exportMembers}>⬇️ Export Data</button>
               <input type="file" ref={fileInputRef} accept=".json" className="hidden" onChange={handleImportFile} />
               <button className="btn-secondary" onClick={handleImportClick}>⬆️ Import Data</button>
-              <button className="btn-secondary" style={{color: 'red'}} onClick={clearStorage}>🗑️ Clear Storage</button>
+              <button className="btn-secondary" style={{color: 'red'}} onClick={handleClearStorage}>🗑️ Clear Storage</button>
             </div>
           </div>
         )}
@@ -133,7 +93,10 @@ export default function App() {
         {/* ADD MEMBER FORM VIEW */}
         {view === 'form' && (
           <AddMemberForm 
-            onSave={handleAddMember} 
+            onSave={(newMember) => {
+              addMember(newMember);
+              setView('dashboard');
+            }} 
             onCancel={() => setView('dashboard')} 
           />
         )}
@@ -146,7 +109,7 @@ export default function App() {
               setView('dashboard');
               setCurrentMemberId(null);
             }}
-            onUpdateMember={handleUpdateMember}
+            onUpdateMember={updateMember}
           />
         )}
         
