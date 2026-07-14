@@ -159,7 +159,7 @@ export default function ProfileView({ member, onBack, onUpdateMember }) {
       </div>
 
       {/* Job Description */}
-      <details ref={addToRefs} className="profile-section-accordion bg-pastel-gray default-open" style={{ marginTop: '20px' }} open>
+      <details ref={addToRefs} className="profile-section-accordion bg-pastel-gray" style={{ marginTop: '20px' }}>
         <summary>Job Description & Critical Competencies</summary>
         <div className="accordion-content card-no-border">
           <h3 className="section-title" style={{ marginTop: 0 }}>Job Description</h3>
