@@ -407,6 +407,7 @@ details.add-item-details > summary.add-item-summary:hover {
     gap: 10px;
     margin-top: 10px;
     flex-wrap: wrap;
+    justify-content: flex-end; /* Align Edit/Delete to the right */
 }
 
 /* --- ROLE HINT ACCORDIONS --- */
@@ -574,7 +575,7 @@ details.profile-section-accordion[open] > summary::after {
 
 /* --- RESPONSIVE MEDIA QUERIES FOR MOBILE (iPHONE) --- */
 @media (max-width: 600px) {
-    /* Stack MAIN buttons full-width on mobile */
+    /* Stack buttons full-width on mobile */
     .btn-primary, .btn-secondary {
         width: 100%;
         margin-bottom: 10px;
@@ -585,30 +586,19 @@ details.profile-section-accordion[open] > summary::after {
         gap: 0;
     }
     
-    /* Expand/Collapse buttons - keep horizontal and centered */
+    /* Expand/Collapse buttons container - keep horizontal and centered */
     #profile-view > div[style*="justify-content: flex-end"] {
-        display: flex !important;
-        flex-direction: row !important;
+        flex-direction: row;
         justify-content: center !important;
-        flex-wrap: wrap !important;
-        gap: 10px !important;
+        flex-wrap: wrap;
+        gap: 5px;
     }
     
-    /* Edit/Delete buttons - force side-by-side, no wrapping */
+    /* Edit/Delete buttons on cards - keep horizontal and right-aligned */
     .card-actions {
-        display: flex !important;
-        flex-direction: row !important;
-        justify-content: flex-end !important;
-        flex-wrap: nowrap !important;
-        gap: 15px !important;
-        margin-top: 10px !important;
-    }
-    
-    /* Strip all width sizing from small buttons */
-    .btn-small, .card-actions .btn-small {
-        width: auto !important;
-        flex: 0 1 auto !important;
-        margin-bottom: 0 !important;
+        flex-direction: row;
+        justify-content: flex-end;
+        gap: 5px;
     }
     
     .dashboard-header {
