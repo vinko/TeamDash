@@ -1,0 +1,1 @@
+// This file was removed during the React migration.
