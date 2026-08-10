@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import ReactMarkdown from 'react-markdown';
 import { appleRoles, fyiCompetencies, leadershipPalette, roleCategories } from './data.js';
 import TrackerAccordion from './components/TrackerAccordion.jsx';
 import EditItemModal from './components/EditItemModal.jsx';
@@ -172,7 +173,7 @@ export default function ProfileView({ member, onBack, onUpdateMember }) {
       </div>
 
       {/* Job Description */}
-      <details ref={addToRefs} className="profile-section-accordion bg-pastel-gray default-open" style={{ marginTop: '20px' }}>
+      <details ref={addToRefs} className="profile-section-accordion bg-pastel-gray" style={{ marginTop: '20px' }}>
         <summary>Job Description & Critical Competencies</summary>
         <div className="accordion-content card-no-border">
           <h3 className="section-title" style={{ marginTop: 0 }}>Job Description</h3>
@@ -203,7 +204,7 @@ export default function ProfileView({ member, onBack, onUpdateMember }) {
               <p className="item-title">{item.name}</p>
               <span className="rating-badge">{getDisplayRating(item.rating)}</span>
             </div>
-            <p className="item-notes">{item.notes}</p>
+            <div className="item-notes markdown-body"><ReactMarkdown>{item.notes}</ReactMarkdown></div>
           </>
         )}
         renderAddForm={() => (
@@ -249,7 +250,7 @@ export default function ProfileView({ member, onBack, onUpdateMember }) {
               <p className="item-title">{item.name}</p>
               <span className="rating-badge">{getDisplayRating(item.rating)}</span>
             </div>
-            <p className="item-notes">{item.notes}</p>
+            <div className="item-notes markdown-body"><ReactMarkdown>{item.notes}</ReactMarkdown></div>
           </>
         )}
         renderAddForm={() => (
@@ -294,7 +295,7 @@ export default function ProfileView({ member, onBack, onUpdateMember }) {
               <p className="item-title">{goal.title}</p>
               <span className={`badge status-${goal.status.replace(' ', '-')}`}>{goal.status}</span>
             </div>
-            <p className="goal-desc">{goal.description}</p>
+            <div className="goal-desc markdown-body"><ReactMarkdown>{goal.description}</ReactMarkdown></div>
             <div className="goal-meta"><span><strong>Target Date:</strong> {goal.date}</span></div>
           </>
         )}
@@ -345,8 +346,14 @@ export default function ProfileView({ member, onBack, onUpdateMember }) {
               <p className="item-title">{checkin.summary}</p>
               <span className="badge badge-style">{checkin.date}</span>
             </div>
-            <p className="goal-desc"><strong>Observations:</strong><br/>{checkin.observations}</p>
-            <p className="goal-desc" style={{marginTop:'10px'}}><strong>Agreed Actions:</strong><br/>{checkin.actions}</p>
+            <div className="goal-desc">
+              <strong>Observations:</strong>
+              <div className="markdown-body" style={{marginTop: '5px'}}><ReactMarkdown>{checkin.observations}</ReactMarkdown></div>
+            </div>
+            <div className="goal-desc" style={{marginTop:'10px'}}>
+              <strong>Agreed Actions:</strong>
+              <div className="markdown-body" style={{marginTop: '5px'}}><ReactMarkdown>{checkin.actions}</ReactMarkdown></div>
+            </div>
           </>
         )}
         renderAddForm={() => (
@@ -388,8 +395,14 @@ export default function ProfileView({ member, onBack, onUpdateMember }) {
               <p className="item-title">{meeting.type} Meeting</p>
               <span className="badge badge-style">{meeting.date}</span>
             </div>
-            <p className="goal-desc"><strong>Notes:</strong><br/>{meeting.notes}</p>
-            <p className="goal-desc" style={{marginTop:'10px'}}><strong>Follow-up Actions:</strong><br/>{meeting.actions}</p>
+            <div className="goal-desc">
+              <strong>Notes:</strong>
+              <div className="markdown-body" style={{marginTop: '5px'}}><ReactMarkdown>{meeting.notes}</ReactMarkdown></div>
+            </div>
+            <div className="goal-desc" style={{marginTop:'10px'}}>
+              <strong>Follow-up Actions:</strong>
+              <div className="markdown-body" style={{marginTop: '5px'}}><ReactMarkdown>{meeting.actions}</ReactMarkdown></div>
+            </div>
           </>
         )}
         renderAddForm={() => (
