@@ -30,7 +30,7 @@ export default function EditItemModal({
                 <option value="Overused">Overused</option>
               </select>
             </div>
-            <div className="form-group"><label>Notes</label><input type="text" value={editData.notes || ''} onChange={e => setEditData({...editData, notes: e.target.value})} /></div>
+            <div className="form-group"><label>Notes</label><textarea rows="3" value={editData.notes || ''} onChange={e => setEditData({...editData, notes: e.target.value})}></textarea></div>
           </>
         )}
 
