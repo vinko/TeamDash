@@ -223,7 +223,7 @@ export default function ProfileView({ member, onBack, onUpdateMember }) {
                 <option value="Overused">Overused</option>
               </select>
             </div>
-            <div className="form-group"><input type="text" placeholder="Add notes or context..." value={fyiNotes} onChange={e=>setFyiNotes(e.target.value)} /></div>
+            <div className="form-group"><textarea rows="3" placeholder="Add notes or context..." value={fyiNotes} onChange={e=>setFyiNotes(e.target.value)}></textarea></div>
             <button type="submit" className="btn-secondary">Save Competency</button>
           </>
         )}
@@ -269,7 +269,7 @@ export default function ProfileView({ member, onBack, onUpdateMember }) {
                 <option value="Overused">Overused</option>
               </select>
             </div>
-            <div className="form-group"><input type="text" placeholder="Add notes or context..." value={palNotes} onChange={e=>setPalNotes(e.target.value)} /></div>
+            <div className="form-group"><textarea rows="3" placeholder="Add notes or context..." value={palNotes} onChange={e=>setPalNotes(e.target.value)}></textarea></div>
             <button type="submit" className="btn-secondary">Save Attribute</button>
           </>
         )}
