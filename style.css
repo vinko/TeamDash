@@ -573,6 +573,22 @@ details.profile-section-accordion[open] > summary::after {
     border: 1px solid rgba(0,0,0,0.05);
 }
 
+/* --- MARKDOWN STYLES --- */
+.markdown-body p {
+    margin: 0 0 8px 0;
+}
+.markdown-body p:last-child {
+    margin-bottom: 0;
+}
+.markdown-body ul, .markdown-body ol {
+    margin: 5px 0 5px 0;
+    padding-left: 20px;
+}
+.markdown-body strong {
+    font-weight: 600;
+    color: var(--apple-text);
+}
+
 /* --- RESPONSIVE MEDIA QUERIES FOR MOBILE (iPHONE) --- */
 @media (max-width: 600px) {
     /* Stack buttons full-width on mobile */
