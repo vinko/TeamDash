@@ -50,6 +50,10 @@ export default function ProfileView({ member, onBack, onUpdateMember }) {
   const [editIndex, setEditIndex] = useState(null);
   const [editData, setEditData] = useState({});
 
+  // --- DELETE MODAL STATES ---
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState({ type: null, index: null });
+
   // --- PROFILE EDIT MODAL STATES ---
   const [profileEditOpen, setProfileEditOpen] = useState(false);
   const [profileEditData, setProfileEditData] = useState({});
@@ -74,6 +78,7 @@ export default function ProfileView({ member, onBack, onUpdateMember }) {
 
   // --- EDIT HANDLERS ---
   const openEditModal = (type, index) => {
+    // Make sure we pass a deep copy of the object so we don't accidentally mutate state directly
     setEditType(type);
     setEditIndex(index);
     setEditData({ ...member[type][index] });
@@ -87,11 +92,18 @@ export default function ProfileView({ member, onBack, onUpdateMember }) {
     setEditModalOpen(false);
   };
 
-  const deleteItem = (type, index) => {
-    if (window.confirm("Are you sure you want to delete this item?")) {
-      const updatedArray = member[type].filter((_, i) => i !== index);
-      onUpdateMember({ ...member, [type]: updatedArray });
-    }
+  // --- DELETE HANDLERS ---
+  const requestDelete = (type, index) => {
+    setItemToDelete({ type, index });
+    setDeleteModalOpen(true);
+  };
+
+  const executeDelete = () => {
+    const { type, index } = itemToDelete;
+    const updatedArray = member[type].filter((_, i) => i !== index);
+    onUpdateMember({ ...member, [type]: updatedArray });
+    setDeleteModalOpen(false);
+    setItemToDelete({ type: null, index: null });
   };
 
   // --- PROFILE EDIT HANDLERS ---
@@ -122,6 +134,7 @@ export default function ProfileView({ member, onBack, onUpdateMember }) {
       if (e.key === 'Escape') {
         setEditModalOpen(false);
         setProfileEditOpen(false);
+        setDeleteModalOpen(false);
       }
     };
     window.addEventListener('keydown', handleKeyDown);
@@ -159,7 +172,7 @@ export default function ProfileView({ member, onBack, onUpdateMember }) {
       </div>
 
       {/* Job Description */}
-      <details ref={addToRefs} className="profile-section-accordion bg-pastel-gray" style={{ marginTop: '20px' }}>
+      <details ref={addToRefs} className="profile-section-accordion bg-pastel-gray default-open" style={{ marginTop: '20px' }}>
         <summary>Job Description & Critical Competencies</summary>
         <div className="accordion-content card-no-border">
           <h3 className="section-title" style={{ marginTop: 0 }}>Job Description</h3>
@@ -178,7 +191,7 @@ export default function ProfileView({ member, onBack, onUpdateMember }) {
         colorClass="bg-pastel-blue"
         defaultOpen={true}
         onEdit={openEditModal}
-        onDelete={deleteItem}
+        onDelete={requestDelete}
         onAdd={(e, close) => {
           if(!fyiName) return alert("Select a competency");
           handleAddItem('competencies', { name: fyiName, rating: fyiRating, notes: fyiNotes }, close);
@@ -224,7 +237,7 @@ export default function ProfileView({ member, onBack, onUpdateMember }) {
         colorClass="bg-pastel-purple"
         defaultOpen={true}
         onEdit={openEditModal}
-        onDelete={deleteItem}
+        onDelete={requestDelete}
         onAdd={(e, close) => {
           if(!palName) return alert("Select an attribute");
           handleAddItem('palette', { name: palName, rating: palRating, notes: palNotes }, close);
@@ -270,7 +283,7 @@ export default function ProfileView({ member, onBack, onUpdateMember }) {
         colorClass="bg-pastel-green"
         defaultOpen={false}
         onEdit={openEditModal}
-        onDelete={deleteItem}
+        onDelete={requestDelete}
         onAdd={(e, close) => {
           handleAddItem('goals', { title: goalTitle, description: goalDesc, date: goalDate, status: goalStatus }, close);
           setGoalTitle(''); setGoalDesc(''); setGoalDate(''); setGoalStatus('Not Started');
@@ -320,7 +333,7 @@ export default function ProfileView({ member, onBack, onUpdateMember }) {
         onDelete={(type, sortedIndex) => {
           const sortedItem = [...member.checkIns].sort((a,b) => new Date(b.date) - new Date(a.date))[sortedIndex];
           const originalIndex = member.checkIns.indexOf(sortedItem);
-          deleteItem(type, originalIndex);
+          requestDelete(type, originalIndex);
         }}
         onAdd={(e, close) => {
           handleAddItem('checkIns', { date: checkDate, summary: checkSummary, observations: checkObs, actions: checkActions }, close);
@@ -363,7 +376,7 @@ export default function ProfileView({ member, onBack, onUpdateMember }) {
         onDelete={(type, sortedIndex) => {
           const sortedItem = [...member.meetings].sort((a,b) => new Date(b.date) - new Date(a.date))[sortedIndex];
           const originalIndex = member.meetings.indexOf(sortedItem);
-          deleteItem(type, originalIndex);
+          requestDelete(type, originalIndex);
         }}
         onAdd={(e, close) => {
           handleAddItem('meetings', { date: meetDate, type: meetType, notes: meetNotes, actions: meetActions }, close);
@@ -407,6 +420,23 @@ export default function ProfileView({ member, onBack, onUpdateMember }) {
         onCancel={() => setEditModalOpen(false)}
         onBackdropClick={handleModalBackdropClick}
       />
+
+      {/* --- DELETE CONFIRMATION MODAL --- */}
+      {deleteModalOpen && (
+        <div 
+          onClick={(e) => handleModalBackdropClick(e, () => setDeleteModalOpen(false))}
+          style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}
+        >
+          <div className="card" style={{ width: '90%', maxWidth: '400px', textAlign: 'center' }}>
+            <h3 style={{ marginTop: 0 }}>Delete Item?</h3>
+            <p>Are you sure you want to delete this item? This cannot be undone.</p>
+            <div className="button-group" style={{ marginTop: '20px', justifyContent: 'center' }}>
+              <button className="btn-secondary" onClick={() => setDeleteModalOpen(false)}>Cancel</button>
+              <button className="btn-primary" style={{ backgroundColor: '#ff3b30' }} onClick={executeDelete}>Delete</button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* --- PROFILE EDIT MODAL --- */}
       {profileEditOpen && (
