@@ -1,12 +1,14 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { Routes, Route, useNavigate, useParams } from 'react-router-dom';
 import { useTeamData } from './hooks/useTeamData';
 import AddMemberForm from './AddMemberForm';
 import ProfileView from './ProfileView';
+import DeleteMemberModal from './components/DeleteMemberModal.jsx';
 
 // A small wrapper component to extract the ID from the URL and find the correct member
 function ProfileViewWrapper({ teamMembers, onBack, onUpdateMember, onDeleteMember }) {
   const { id } = useParams();
+  const [deleteOpen, setDeleteOpen] = useState(false);
   const member = teamMembers.find(m => m.id.toString() === id);
 
   if (!member) {
@@ -18,13 +20,34 @@ function ProfileViewWrapper({ teamMembers, onBack, onUpdateMember, onDeleteMembe
     );
   }
 
+  const handleConfirmDelete = async () => {
+    setDeleteOpen(false);
+    onBack(); // navigate first to avoid a "Member not found" flash
+    await onDeleteMember(member.id);
+  };
+
   return (
-    <ProfileView 
-      member={member} 
-      onBack={onBack} 
-      onUpdateMember={onUpdateMember} 
-      onDeleteMember={onDeleteMember} 
-    />
+    <>
+      <ProfileView member={member} onBack={onBack} onUpdateMember={onUpdateMember} />
+
+      {/* DELETE TEAM MEMBER */}
+      <div style={{ textAlign: 'center', marginTop: '40px', marginBottom: '40px' }}>
+        <button
+          className="btn-secondary"
+          style={{ color: '#ff3b30', minHeight: '44px' }}
+          onClick={() => setDeleteOpen(true)}
+        >
+          🗑️ Delete Team Member
+        </button>
+      </div>
+
+      <DeleteMemberModal
+        isOpen={deleteOpen}
+        memberName={member.name}
+        onConfirm={handleConfirmDelete}
+        onCancel={() => setDeleteOpen(false)}
+      />
+    </>
   );
 }
 
@@ -51,12 +74,6 @@ export default function App() {
     await importData(event.target.files[0]);
     // Reset the input so the same file can be imported again if needed
     event.target.value = null; 
-  };
-
-  // Navigate away first so the "Member not found" screen never flashes
-  const handleDeleteMember = async (memberId) => {
-    navigate('/');
-    await deleteMember(memberId);
   };
 
   if (isLoading) {
@@ -129,7 +146,7 @@ export default function App() {
               teamMembers={teamMembers} 
               onBack={() => navigate('/')} 
               onUpdateMember={updateMember} 
-              onDeleteMember={handleDeleteMember} 
+              onDeleteMember={deleteMember}
             />
           } />
         </Routes>
