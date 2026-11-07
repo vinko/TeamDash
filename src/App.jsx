@@ -5,7 +5,7 @@ import AddMemberForm from './AddMemberForm';
 import ProfileView from './ProfileView';
 
 // A small wrapper component to extract the ID from the URL and find the correct member
-function ProfileViewWrapper({ teamMembers, onBack, onUpdateMember }) {
+function ProfileViewWrapper({ teamMembers, onBack, onUpdateMember, onDeleteMember }) {
   const { id } = useParams();
   const member = teamMembers.find(m => m.id.toString() === id);
 
@@ -18,7 +18,14 @@ function ProfileViewWrapper({ teamMembers, onBack, onUpdateMember }) {
     );
   }
 
-  return <ProfileView member={member} onBack={onBack} onUpdateMember={onUpdateMember} />;
+  return (
+    <ProfileView 
+      member={member} 
+      onBack={onBack} 
+      onUpdateMember={onUpdateMember} 
+      onDeleteMember={onDeleteMember} 
+    />
+  );
 }
 
 export default function App() {
@@ -27,6 +34,7 @@ export default function App() {
     isLoading, 
     addMember, 
     updateMember, 
+    deleteMember,
     clearStorage, 
     exportData, 
     importData 
@@ -43,6 +51,12 @@ export default function App() {
     await importData(event.target.files[0]);
     // Reset the input so the same file can be imported again if needed
     event.target.value = null; 
+  };
+
+  // Navigate away first so the "Member not found" screen never flashes
+  const handleDeleteMember = async (memberId) => {
+    navigate('/');
+    await deleteMember(memberId);
   };
 
   if (isLoading) {
@@ -115,6 +129,7 @@ export default function App() {
               teamMembers={teamMembers} 
               onBack={() => navigate('/')} 
               onUpdateMember={updateMember} 
+              onDeleteMember={handleDeleteMember} 
             />
           } />
         </Routes>
