@@ -38,6 +38,11 @@ export function useTeamData() {
     await saveTeamData(updated);
   };
 
+  const deleteMember = async (memberId) => {
+    const updated = teamMembers.filter(m => m.id !== memberId);
+    await saveTeamData(updated);
+  };
+
   const clearStorage = async () => {
     if (window.confirm("Are you sure you want to clear all team members? This cannot be undone.")) {
       await localforage.removeItem('teamMembersData');
@@ -86,6 +91,7 @@ export function useTeamData() {
     isLoading,
     addMember,
     updateMember,
+    deleteMember,
     clearStorage,
     exportData,
     importData
