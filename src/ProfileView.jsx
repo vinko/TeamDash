@@ -4,7 +4,7 @@ import { appleRoles, fyiCompetencies, leadershipPalette, roleCategories } from '
 import TrackerAccordion from './components/TrackerAccordion.jsx';
 import EditItemModal from './components/EditItemModal.jsx';
 
-export default function ProfileView({ member, onBack, onUpdateMember }) {
+export default function ProfileView({ member, onBack, onUpdateMember, onRequestDelete }) {
   // --- ACCORDION REFS FOR EXPAND/COLLAPSE ALL ---
   const accordionRefs = useRef([]);
   const addToRefs = (el) => {
@@ -144,10 +144,13 @@ export default function ProfileView({ member, onBack, onUpdateMember }) {
 
   return (
     <div id="profile-view">
-      <div className="dashboard-header">
-        <button className="btn-secondary" onClick={onBack}>← Back to Dashboard</button>
+      <div className="dashboard-header profile-toolbar">
+        <button type="button" className="btn-secondary" onClick={onBack}>← Back to Dashboard</button>
         <h2>{member.name}</h2>
-        <button className="btn-secondary" onClick={openProfileEdit}>✏️ Edit Profile</button>
+        <div className="profile-actions">
+          <button type="button" className="btn-secondary" onClick={openProfileEdit}>✏️ Edit Profile</button>
+          <button type="button" className="btn-secondary member-delete-btn" onClick={onRequestDelete}>🗑️ Delete Team Member</button>
+        </div>
       </div>
 
       {/* Profile Header Card */}

@@ -1,11 +1,12 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { Routes, Route, useNavigate, useParams } from 'react-router-dom';
 import { useTeamData } from './hooks/useTeamData';
 import AddMemberForm from './AddMemberForm';
 import ProfileView from './ProfileView';
+import DeleteMemberModal from './components/DeleteMemberModal.jsx';
 
 // A small wrapper component to extract the ID from the URL and find the correct member
-function ProfileViewWrapper({ teamMembers, onBack, onUpdateMember }) {
+function ProfileViewWrapper({ teamMembers, onBack, onUpdateMember, onRequestDelete }) {
   const { id } = useParams();
   const member = teamMembers.find(m => m.id.toString() === id);
 
@@ -18,7 +19,14 @@ function ProfileViewWrapper({ teamMembers, onBack, onUpdateMember }) {
     );
   }
 
-  return <ProfileView member={member} onBack={onBack} onUpdateMember={onUpdateMember} />;
+  return (
+    <ProfileView
+      member={member}
+      onBack={onBack}
+      onUpdateMember={onUpdateMember}
+      onRequestDelete={() => onRequestDelete(member)}
+    />
+  );
 }
 
 export default function App() {
@@ -26,7 +34,8 @@ export default function App() {
     teamMembers, 
     isLoading, 
     addMember, 
-    updateMember, 
+    updateMember,
+    deleteMember, 
     clearStorage, 
     exportData, 
     importData 
@@ -34,6 +43,15 @@ export default function App() {
   
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
+  const [memberPendingDelete, setMemberPendingDelete] = useState(null);
+
+  const handleConfirmDeleteMember = async () => {
+    if (!memberPendingDelete) return;
+    const memberId = memberPendingDelete.id;
+    setMemberPendingDelete(null);
+    navigate('/');
+    await deleteMember(memberId);
+  };
 
   const handleImportClick = () => {
     fileInputRef.current.click();
@@ -69,7 +87,7 @@ export default function App() {
                   <p>No team members yet. Click the button above to add someone!</p>
                 ) : (
                   teamMembers.map(member => (
-                    <div key={member.id} className="card clickable-card" onClick={() => navigate(`/profile/${member.id}`)}>
+                    <div key={member.id} className="card clickable-card member-card" onClick={() => navigate(`/profile/${member.id}`)}>
                       <div className="member-card-header">
                         <div className="member-emoji">{member.emoji}</div>
                         <div className="member-info">
@@ -84,6 +102,16 @@ export default function App() {
                       <div className="card-stats">
                         Active Goals: {member.goals ? member.goals.length : 0}
                       </div>
+                      <button
+                        type="button"
+                        className="btn-secondary member-delete-btn"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setMemberPendingDelete(member);
+                        }}
+                      >
+                        🗑️ Delete Team Member
+                      </button>
                     </div>
                   ))
                 )}
@@ -114,11 +142,18 @@ export default function App() {
             <ProfileViewWrapper 
               teamMembers={teamMembers} 
               onBack={() => navigate('/')} 
-              onUpdateMember={updateMember} 
+              onUpdateMember={updateMember}
+              onRequestDelete={setMemberPendingDelete}
             />
           } />
         </Routes>
       </main>
+      <DeleteMemberModal
+        isOpen={Boolean(memberPendingDelete)}
+        memberName={memberPendingDelete ? memberPendingDelete.name : ''}
+        onConfirm={handleConfirmDeleteMember}
+        onCancel={() => setMemberPendingDelete(null)}
+      />
     </div>
   );
 }
